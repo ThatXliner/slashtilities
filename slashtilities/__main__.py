@@ -29,6 +29,7 @@ async def ping(ctx):
     description="Get the person who pinged you ever since your last message",
 )
 async def igotpinged(ctx):
+    ctx.defer()
     try:
         last_msg = await get_last_message_from(ctx.author, channel=ctx.channel)
     except discord.errors.Forbidden:
@@ -37,20 +38,19 @@ async def igotpinged(ctx):
             "I don't even have access to this channel???"
         )
         return
-    async with ctx.channel.typing():
-        async for message in ctx.channel.history(
-            after=last_msg,
-            limit=None,  # or 9000?
-        ):
-            if ctx.author.mentioned_in(message):
-                await ctx.send(
-                    f":mag: {message.author} did, right here: {message.jump_url}"
-                )
-                break
-        else:
+    async for message in ctx.channel.history(
+        after=last_msg,
+        limit=None,  # or 9000?
+    ):
+        if ctx.author.mentioned_in(message):
             await ctx.send(
-                ":ghost: I didn't find anyone. You probably got ***ghost pinged***"
+                f":mag: {message.author} did, right here: {message.jump_url}"
             )
+            break
+    else:
+        await ctx.send(
+            ":ghost: I didn't find anyone. You probably got ***ghost pinged***"
+        )
 
 
 async def get_last_message_from(author, channel):
