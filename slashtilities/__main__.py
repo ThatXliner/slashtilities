@@ -21,7 +21,7 @@ async def on_ready():
 
 @slash.slash(name="ping", description="Return the latency of the bot")
 async def ping(ctx):
-    await ctx.send(f":ping_pong: Pong! | (``{client.latency*1000:.4}` ms)")
+    await ctx.send(f":ping_pong: Pong! | (`{client.latency*1000:.4}` ms)")
 
 
 @slash.slash(
