@@ -43,7 +43,7 @@ async def ping(ctx):
     guild_ids=get_testing_guilds(),
 )
 async def igotpinged(ctx):
-    ctx.defer()
+    await ctx.defer()
     try:
         last_msg = await get_last_message_from(ctx.author, channel=ctx.channel)
     except discord.errors.Forbidden:
