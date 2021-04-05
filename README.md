@@ -18,13 +18,13 @@
 
 #### `/ping`
 
-> Returns the bot's [ping](https://www.rtr.at/TKP/service/rtr-nettest/help/test_result/netztestfaq_testergebnis_0300.en.html)
+> Returns the bot's [ping](https://www.rtr.at/TKP/service/rtr-nettest/help/test_result/netztestfaq_testergebnis_0300.en.html) in miliseconds
 
 Other than being a basic sanity check, this command is quite useless.
 
 #### `/igotpinged`
 
-> Get the last message pinging you
+> Get the last message pinging you after your latest message sent in the channel
 
 When you're in servers where people talk 100 messages a minute, this command is useful when
 
