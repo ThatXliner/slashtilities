@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "slashtilities"
+version = "0.1.0"
+description = "A nice and simple, slash command-based, Discord utility bot."
+authors = ["Bryan Hu <bryan.hu.2020@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+"discord.py" = "^1.6.0"
+discord-py-slash-command = "^1.1.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+mypy = "^0.812"
+pylint = "^2.7.4"
+"discord.py-stubs" = "^1.6.3"
+black = "^20.8b1"
+isort = "^5.8.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
