@@ -29,11 +29,10 @@ async def ping(ctx):
     description="Get the person who pinged you ever since your last message",
 )
 async def igotpinged(ctx):
-    last_msg = await get_last_message_from(ctx.author)
+    last_msg = await get_last_message_from(ctx.author, channel=ctx.channel)
     async with ctx.channel.typing():
         async for message in ctx.channel.history(
             after=last_msg,
-            oldest_first=False,
             limit=None,  # or 9000?
         ):
             if ctx.author.mentioned_in(message):
@@ -43,13 +42,15 @@ async def igotpinged(ctx):
                 break
         else:
             await ctx.send(
-                ":shrug: I didn't find anyone. You probably got ***ghost pinged***"
+                ":ghost: I didn't find anyone. You probably got ***ghost pinged***"
             )
 
 
-async def get_last_message_from(author):
-    async for message in author.history(limit=1):
-        return message
+async def get_last_message_from(author, channel):
+    async for message in channel.history(oldest_first=False, limit=None):
+        if message.author.id == author.id:
+            return message
+    return None
 
 
 # Commented out because should be a mod-only command
