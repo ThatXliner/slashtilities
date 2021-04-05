@@ -4,9 +4,8 @@ import os
 import discord
 import discord.ext.commands
 from discord_slash import SlashCommand  # Importing the newly installed library.
-
-# from discord_slash.model import SlashCommandOptionType
-# from discord_slash.utils.manage_commands import create_option
+from discord_slash.model import SlashCommandOptionType
+from discord_slash.utils.manage_commands import create_option
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = discord.Intents().default()
@@ -79,6 +78,90 @@ async def get_last_message_from(author, channel):
             return message
     print("\N{CROSS MARK} Not found")
     return None
+
+
+def create_person_options(maximum: int):
+    output = [
+        create_option(
+            "user1",
+            "The first person you want to cc",
+            option_type=SlashCommandOptionType.USER,
+            required=True,
+        )
+    ]
+    output.extend(
+        [
+            create_option(
+                f"user{x}",
+                "Another person you want to cc",
+                option_type=SlashCommandOptionType.USER,
+                required=False,
+            )
+            for x in range(2, maximum)
+        ]
+    )
+    return output
+
+
+@slash.slash(
+    name="cc",  # TODO: Add "whopingedme" alias
+    description="Send a carbon copy of your last message to other people in dms",
+    guild_ids=get_testing_guilds(),
+    options=create_person_options(10),
+)
+async def cc(ctx, *users) -> None:
+    ctx.defer()
+    for user in users:
+        print("DMing a user")
+        (user.dm_channel or await user.create_dm()).send(
+            await create_cc_message(ctx, users)
+        )
+        ctx.send(
+            "I have CC'd the following people:\n"
+            + "\n - ".join(person.name for person in users)
+        )
+
+
+@slash.slash(
+    name="bcc",  # TODO: Add "whopingedme" alias
+    description="Send a blind carbon copy of your last message to other people in dms",
+    guild_ids=get_testing_guilds(),
+    options=create_person_options(10),
+)
+async def bcc(ctx, *users) -> None:
+    ctx.defer()
+    for user in users:
+        print("DMing a user")
+        (user.dm_channel or await user.create_dm()).send(await create_bcc_message(ctx))
+        ctx.send(
+            "I have BCC'd the following people:\n"
+            + "\n - ".join(person.name for person in users)
+        )
+
+
+async def create_bcc_message(ctx):
+    return (
+        f"You have been BCC'd by {ctx.author.mention}.\n"
+        + "Message:\n"
+        + "\n > ".join(
+            await get_last_message_from(ctx.author, channel=ctx.channel).splitlines()
+        )
+        + "\nThis is a BCC (Blind Carbon Copy)"
+        + "\n"
+    )
+
+
+async def create_cc_message(ctx, other_people):
+    return (
+        f"You have been CC'd by {ctx.author.mention}.\n"
+        + "Message:\n"
+        + "\n > ".join(
+            await get_last_message_from(ctx.author, channel=ctx.channel).splitlines()
+        )
+        + "\nOther people who have also been CC'd are:\n"
+        + "\n - ".join(person.mention for person in other_people)
+        + "\n"
+    )
 
 
 # Commented out because should be a mod-only command
