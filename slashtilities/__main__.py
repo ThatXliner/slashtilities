@@ -29,7 +29,14 @@ async def ping(ctx):
     description="Get the person who pinged you ever since your last message",
 )
 async def igotpinged(ctx):
-    last_msg = await get_last_message_from(ctx.author, channel=ctx.channel)
+    try:
+        last_msg = await get_last_message_from(ctx.author, channel=ctx.channel)
+    except discord.errors.Forbidden:
+        await ctx.send(
+            ":x: How do you expect me to find your last message if "
+            "I don't even have access to this channel???"
+        )
+        return
     async with ctx.channel.typing():
         async for message in ctx.channel.history(
             after=last_msg,
