@@ -19,7 +19,18 @@ async def on_ready():
     print("\N{WHITE HEAVY CHECK MARK} I am ready!")
 
 
-@slash.slash(name="ping", description="Return the latency of the bot")
+def get_testing_guilds():
+    if os.environ.get("DISCORD_TESTING") == "1":
+        return os.environ["DISCORD_TEST_GUILDS"].split(",")
+    else:
+        return None
+
+
+@slash.slash(
+    name="ping",
+    description="Return the latency of the bot",
+    guild_ids=get_testing_guilds(),
+)
 async def ping(ctx):
     await ctx.send(f":ping_pong: Pong! | (`{client.latency*1000:.4}` ms)")
 
@@ -27,6 +38,7 @@ async def ping(ctx):
 @slash.slash(
     name="igotpinged",  # TODO: Add "whopingedme" alias
     description="Get the person who pinged you ever since your last message",
+    guild_ids=get_testing_guilds(),
 )
 async def igotpinged(ctx):
     ctx.defer()
