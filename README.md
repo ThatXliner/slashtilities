@@ -24,7 +24,7 @@ Other than being a basic sanity check, this command is quite useless.
 
 #### `/igotpinged`
 
-> Get the last message pinging you after your latest message sent in the channel
+> Get the last message pinging you after your last message sent in the channel
 
 When you're in servers where people talk 100 messages a minute, this command is useful when
 
@@ -56,7 +56,7 @@ Basically [`/cc`](#cc-someone-) but the dm message doesn't tell them who else yo
 
 > Ask a multi-choice poll (not mutually exclusive)
 
-Basically, ~~I copied [Dyno's command]~~ this is useful if you want a group vote. This command will also add the nessecary reactions.
+This is useful if you want a group vote. This command will also add the nessecary reactions.
 
 **NOTE:** The current limit of choices is 10
 
