@@ -5,7 +5,7 @@ import discord
 import discord.ext.commands
 from discord_slash import SlashCommand  # Importing the newly installed library.
 from discord_slash.model import SlashCommandOptionType
-from discord_slash.utils.manage_commands import create_option
+from discord_slash.utils.manage_commands import create_option, remove_all_commands_in
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = discord.Intents().default()
@@ -159,11 +159,7 @@ async def bcc(ctx, *users) -> None:
             )
         await ctx.send(
             "I have BCC'd the following people:\n"
-            + (
-                await make_list(
-                    f"`{person.name}#{person.discriminator}`" for person in filtered
-                )
-            )
+            + (await make_list(f"`{person}`" for person in filtered))
         )
     if set(filtered) != set(users):
         if filtered:
@@ -220,6 +216,99 @@ async def make_list(stuff) -> str:
     for item in stuff:
         output += " - " + item + "\n"
     return output
+
+
+async def make_numbered_list(stuff) -> str:
+    output = ""
+    for index, item in enumerate(stuff, start=1):
+        output += f"{get_emoji_for(index)} " + item + "\n\n"
+    return output
+
+
+def create_poll_options(maximum: int):
+    output = [
+        create_option(
+            "question",
+            "The question that you're asking",
+            option_type=SlashCommandOptionType.STRING,
+            required=True,
+        ),
+        create_option(
+            "choice1",
+            "A choice",
+            option_type=SlashCommandOptionType.STRING,
+            required=True,
+        ),
+        create_option(
+            "choice2",
+            "A choice",
+            option_type=SlashCommandOptionType.STRING,
+            required=True,
+        ),
+    ]
+    output.extend(
+        [
+            create_option(
+                f"choice{x}",
+                "A choice",
+                option_type=SlashCommandOptionType.STRING,
+                required=False,
+            )
+            for x in range(3, maximum)
+        ]
+    )
+    return output
+
+
+@slash.slash(
+    name="poll",
+    description="Send a multi-choice poll. (Mutually exclusive options not supported)",
+    guild_ids=get_testing_guilds(),
+    options=create_poll_options(10),
+)
+async def poll(ctx, question: str, *choices):
+    msg = await ctx.send(
+        f"{ctx.author.mention} asks:\n\n> {question}\n\n"
+        + await make_numbered_list(choices),
+        allowed_mentions=discord.AllowedMentions().none(),
+    )
+    for emoji in map(get_emoji_for, range(1, len(choices) + 1)):
+        await msg.add_reaction(emoji)
+
+
+def get_emoji_for(thing: int) -> str:
+    emoji_dict = {
+        1: "1️⃣",
+        2: "2️⃣",
+        3: "3️⃣",
+        4: "4️⃣",
+        5: "5️⃣",
+        6: "6️⃣",
+        7: "7️⃣",
+        8: "8️⃣",
+        9: "9️⃣",
+        10: "🔟",
+    }
+    return emoji_dict[thing]
+
+
+@slash.slash(
+    name="yesno",
+    description="Send a yes or no question (Mutually exclusive options not supported)",
+    guild_ids=get_testing_guilds(),
+    options=[
+        create_option(
+            "question",
+            "The question you're going to ask",
+            option_type=SlashCommandOptionType.STRING,
+            required=True,
+        ),
+    ],
+)
+async def yesno(ctx, question: str):
+    msg = await ctx.send(f"{ctx.author.mention} asks:\n> {question}")
+    await msg.add_reaction("\N{THUMBS UP SIGN}")
+    await msg.add_reaction("\N{THUMBS DOWN SIGN}")
 
 
 # Commented out because should be a mod-only command
