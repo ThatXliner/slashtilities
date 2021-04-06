@@ -56,16 +56,26 @@ async def igotpinged(ctx):
         )
     else:
         print("Getting last ping...", end=" ")
+        ping_msgs = []
         async for message in ctx.channel.history(
             after=last_msg,
             limit=None,  # or 9000?
         ):
             if ctx.author.mentioned_in(message):
-                print("\N{WHITE HEAVY CHECK MARK}")
+                ping_msgs.append(message)
+
+        if len(ping_msgs) > 0:
+            print("\N{WHITE HEAVY CHECK MARK}")
+            if len(ping_msgs) > 1:
+                await ctx.send("These people did:")
+                for message in ping_msgs:
+                    ctx.channel.send(
+                        f":mag: {message.author}, right here: {message.jump_url}"
+                    )
+            else:
                 await ctx.send(
-                    f":mag: {message.author} did, right here: {message.jump_url}"
+                    f":mag: {ping_msgs[0].author} did, right here: {ping_msgs[0].jump_url}"
                 )
-                break
         else:
             print("\N{GHOST}")
             await ctx.send(
