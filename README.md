@@ -44,18 +44,20 @@ Because just pinging them is risky.
 
 DMs are a safe and persistent place for dumping messages.
 
+**NOTE:** Because of Discord's current API limits, you can only [`/cc`](#cc-someone-)/[`/bcc`](#bcc-someone-) a limited number of people. I have currently made that limit *10* but **if you want to make the limit higher, request it in our [issue tracker][issue]**
+
 #### `/bcc @someone, ...`
 
 > Sends a dm to the people you `/cc`'d with your latest message contents and link
 
-Basically [`/cc`](#cc-someone) but the dm message doesn't tell them who else you've CC'd.
+Basically [`/cc`](#cc-someone-) but the dm message doesn't tell them who else you've CC'd.
 
 
 #### `/???`
 
 > ???
 
-Suggest your command in our [issue tracker](https://github.com/ThatXliner/slashtilities/issues/)! Maybe the newest command came from your idea!
+Suggest your command in our [issue tracker][issue]! Maybe the newest command came from your idea!
 
 ## Instructions
 
@@ -82,3 +84,5 @@ Finally, start running the bot. Remember to replace `<your token here>` with you
 ```bash
 $ DISCORD_TOKEN="<your token here>" poetry run python -m slashtilities
 ```
+
+[issue]: https://github.com/ThatXliner/slashtilities/issues/
