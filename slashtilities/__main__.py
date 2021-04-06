@@ -68,7 +68,7 @@ async def igotpinged(ctx):
             if len(ping_msgs) > 1:
                 await ctx.send("These people did:")
                 for message in ping_msgs:
-                    ctx.channel.send(
+                    await ctx.channel.send(
                         f":mag: {message.author}, right here: {message.jump_url}"
                     )
             else:
@@ -278,7 +278,7 @@ def get_emoji_for(thing: int) -> str:
         1: "1️⃣",
         2: "2️⃣",
         3: "3️⃣",
-        4: "4�����",
+        4: "4️⃣",
         5: "5️⃣",
         6: "6️⃣",
         7: "7️⃣",
