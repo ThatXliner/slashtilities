@@ -125,16 +125,16 @@ async def cc(ctx, *users) -> None:
                 )
             )
         )
-    if filtered != users:
+    if set(filtered) != set(users):
         if filtered:
             await ctx.channel.send("Wait, someone's missing? Here's why:")
         else:
             await ctx.send("You CC'd nobody. Here's why:")
-        if [user for user in users if not user.bot] == filtered:
+        if {user for user in users if user.bot} == set(filtered):
             await ctx.channel.send(
                 ":robot: I can't dm other bots, you know. ~~They actually blocked me :sob:~~"
             )
-        elif [user for user in users if not user.id == ctx.author.id] == filtered:
+        elif {user for user in users if user.id == ctx.author.id} == set(filtered):
             await ctx.channel.send(":mirror: You can't send a cc to yourself-")
         else:  # Both
             await ctx.channel.send(
@@ -165,16 +165,16 @@ async def bcc(ctx, *users) -> None:
                 )
             )
         )
-    if filtered != users:
+    if set(filtered) != set(users):
         if filtered:
             await ctx.channel.send("Wait, someone's missing? Here's why:")
         else:
             await ctx.send("You BCC'd nobody. Here's why:")
-        if [user for user in users if not user.bot] == filtered:
+        if {user for user in users if user.bot} == set(filtered):
             await ctx.channel.send(
                 ":robot: I can't dm other bots, you know. ~~They actually blocked me :sob:~~"
             )
-        elif [user for user in users if not user.id == ctx.author.id] == filtered:
+        elif {user for user in users if user.id == ctx.author.id} == set(filtered):
             await ctx.channel.send(":mirror: You can't send a bcc to yourself-")
         else:  # Both
             await ctx.channel.send(
