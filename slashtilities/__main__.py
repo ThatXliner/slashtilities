@@ -158,28 +158,24 @@ async def bcc(ctx, *users) -> None:
 
 
 async def create_bcc_message(ctx):
+    from_message = await get_last_message_from(ctx.author, channel=ctx.channel)
     return (
         f"You have been BCC'd by {ctx.author.mention}.\n"
         + "Message:\n"
-        + (
-            await quote(
-                (await get_last_message_from(ctx.author, channel=ctx.channel)).content
-            )
-        )
+        + (await quote(from_message.content))
+        + f"\n*Here: {from_message.jump_url}*\n"
         + "\nThis is a BCC (Blind Carbon Copy)"
         + "\n"
     )
 
 
 async def create_cc_message(ctx, other_people):
+    from_message = await get_last_message_from(ctx.author, channel=ctx.channel)
     return (
         f"You have been CC'd by {ctx.author.mention}.\n"
         + "Message:\n"
-        + (
-            await quote(
-                (await get_last_message_from(ctx.author, channel=ctx.channel)).content
-            )
-        )
+        + (await quote(from_message.content))
+        + f"\n*Here: {from_message.jump_url}*\n"
         + "\nOther people who have also been CC'd are:\n"
         + (await make_list(person.name for person in other_people))
         + "\n"
