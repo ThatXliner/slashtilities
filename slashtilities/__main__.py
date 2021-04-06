@@ -1,11 +1,12 @@
 # TODO: Use embeds
+import asyncio
 import os
 
 import discord
 import discord.ext.commands
 from discord_slash import SlashCommand  # Importing the newly installed library.
 from discord_slash.model import SlashCommandOptionType
-from discord_slash.utils.manage_commands import create_option, remove_all_commands_in
+from discord_slash.utils.manage_commands import create_option, remove_all_commands
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = discord.Intents().default()
@@ -20,7 +21,10 @@ async def on_ready():
 
 def get_testing_guilds():
     if os.environ.get("DISCORD_TESTING") == "1":
-        return os.environ["DISCORD_TEST_GUILDS"].split(",")
+        guild_ids = os.environ["DISCORD_TEST_GUILDS"].split(",")
+        for guild_id in guild_ids:
+            asyncio.run(remove_all_commands(743293304963072021, TOKEN, guild_id))
+        return guild_ids
     else:
         return None
 
@@ -103,40 +107,54 @@ def create_person_options(maximum: int):
     return output
 
 
-@slash.slash(  # TODO: Refactor to remove code duplication. This and BCC
+@slash.slash(
     name="cc",
     description="CC other people your last message",
     guild_ids=get_testing_guilds(),
     options=create_person_options(10),
 )
 async def cc(ctx, *users) -> None:
+    await cc_helper(
+        ctx, create_cc_message, "I have CC'd the following people:\n", "CC", users
+    )
+
+
+async def cc_helper(ctx, msg_func, after_msg, atype, users):
     await ctx.defer()
     filtered = [user for user in users if not (user.bot or user.id == ctx.author.id)]
     if filtered:
+        last_msg = await get_last_message_from(ctx.author, channel=ctx.channel)
         for user in filtered:
             await (user.dm_channel or await user.create_dm()).send(
-                await create_cc_message(ctx, filtered)
+                await msg_func(
+                    ctx,
+                    filtered,
+                    from_message=last_msg,
+                )
             )
-        await ctx.send(
-            "I have CC'd the following people:\n"
+        await ctx.send(  # XXX: Remove for BCC?
+            after_msg
             + (await make_list(f"`{person}`" for person in filtered))
+            + "\nYour message:\n"
+            + (await quote(last_msg))
+            + f"\n{last_msg.jump_url}"
         )
     if set(filtered) != set(users):
         if filtered:
             await ctx.channel.send("Wait, someone's missing? Here's why:")
         else:
-            await ctx.send("You CC'd nobody. Here's why:")
-        if {user for user in users if user.bot} == set(filtered):
+            await ctx.send(f"You {atype}'d nobody. Here's why:")
+        if {user for user in users if not user.id == ctx.author.id} == set(filtered):
             await ctx.channel.send(
                 ":robot: I can't dm other bots, you know. ~~They actually blocked me :sob:~~"
             )
         elif {user for user in users if not user.bot} == set(filtered):
-            await ctx.channel.send(":mirror: You can't send a cc to yourself-")
+            await ctx.channel.send(f":mirror: You can't {atype} yourself-")
         else:  # Both
             await ctx.channel.send(
                 ":robot: I can't dm other bots, you know. ~~They actually blocked me :sob:~~"
             )
-            await ctx.channel.send(":mirror: Also, you can't send a cc to yourself.")
+            await ctx.channel.send(f":mirror: Also, you can't {atype} yourself.")
 
 
 @slash.slash(
@@ -146,53 +164,27 @@ async def cc(ctx, *users) -> None:
     options=create_person_options(10),
 )
 async def bcc(ctx, *users) -> None:
-    await ctx.defer()
-    filtered = [user for user in users if not (user.bot or user.id == ctx.author.id)]
-    if filtered:
-        for user in filtered:
-            await (user.dm_channel or await user.create_dm()).send(
-                await create_bcc_message(ctx)
-            )
-        await ctx.send(  # XXX: Remove?
-            "I have BCC'd the following people:\n"
-            + (await make_list(f"`{person}`" for person in filtered))
-        )
-    if set(filtered) != set(users):
-        if filtered:
-            await ctx.channel.send("Wait, someone's missing? Here's why:")
-        else:
-            await ctx.send("You BCC'd nobody. Here's why:")
-        if {user for user in users if user.bot} == set(filtered):
-            await ctx.channel.send(
-                ":robot: I can't dm other bots, you know. ~~They actually blocked me :sob:~~"
-            )
-        elif {user for user in users if not user.bot} == set(filtered):
-            await ctx.channel.send(":mirror: You can't send a bcc to yourself-")
-        else:  # Both
-            await ctx.channel.send(
-                ":robot: I can't dm other bots, you know. ~~They actually blocked me :sob:~~"
-            )
-            await ctx.channel.send(":mirror: Also, you can't send a bcc to yourself.")
+    await cc_helper(
+        ctx, create_bcc_message, "I have BCC'd the following people:\n", "BCC", users
+    )
 
 
-async def create_bcc_message(ctx):
-    from_message = await get_last_message_from(ctx.author, channel=ctx.channel)
+async def create_bcc_message(ctx, _, from_message):
     return (
         f"You have been BCC'd by {ctx.author.mention}.\n"
         + "Message:\n"
-        + (await quote(from_message.content))
+        + (await quote(from_message))
         + f"\n*Here: {from_message.jump_url}*\n"
         + "\nThis is a BCC (Blind Carbon Copy)"
         + "\n"
     )
 
 
-async def create_cc_message(ctx, other_people):
-    from_message = await get_last_message_from(ctx.author, channel=ctx.channel)
+async def create_cc_message(ctx, other_people, from_message):
     return (
         f"You have been CC'd by {ctx.author.mention}.\n"
         + "Message:\n"
-        + (await quote(from_message.content))
+        + (await quote(from_message))
         + f"\n*Here: {from_message.jump_url}*\n"
         + "\nOther people who have also been CC'd are:\n"
         + (await make_list(person.mention for person in other_people))
@@ -200,9 +192,9 @@ async def create_cc_message(ctx, other_people):
     )
 
 
-async def quote(msg: str) -> str:
+async def quote(msg: discord.Message) -> str:
     output = ""
-    for line in msg.splitlines():
+    for line in msg.content.splitlines():
         output += "> " + line
     return output
 
@@ -277,7 +269,7 @@ def get_emoji_for(thing: int) -> str:
         1: "1️⃣",
         2: "2️⃣",
         3: "3️⃣",
-        4: "4️⃣",
+        4: "4�����",
         5: "5️⃣",
         6: "6️⃣",
         7: "7️⃣",
