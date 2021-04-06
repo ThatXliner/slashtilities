@@ -22,8 +22,7 @@ async def on_ready():
 def get_testing_guilds():
     if os.environ.get("DISCORD_TESTING") == "1":
         guild_ids = os.environ["DISCORD_TEST_GUILDS"].split(",")
-        for guild_id in guild_ids:
-            asyncio.run(remove_all_commands(743293304963072021, TOKEN, guild_id))
+        asyncio.run(slash.sync_all_commands())
         return guild_ids
     else:
         return None
