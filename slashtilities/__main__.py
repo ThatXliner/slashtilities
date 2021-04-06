@@ -111,23 +111,32 @@ def create_person_options(maximum: int):
 )
 async def cc(ctx, *users) -> None:
     await ctx.defer()
-    for user in users:
-        if user.bot:
-            await ctx.channel.send(
-                f":x: Dude, why are trying to cc bots? I cannot dm {user.mention}"
-            )
-            continue
+    filtered = [user for user in users if not (user.bot or user.id == ctx.author.id)]
+    for user in filtered:
         await (user.dm_channel or await user.create_dm()).send(
-            await create_bcc_message(ctx)
+            await create_cc_message(ctx, filtered)
         )
-        await ctx.send(
-            "I have CC'd the following people:\n"
-            + (
-                await make_list(
-                    f"`{person.name}#{person.discriminator}`" for person in users
-                )
+    await ctx.send(
+        "I have CC'd the following people:\n"
+        + (
+            await make_list(
+                f"`{person.name}#{person.discriminator}`" for person in filtered
             )
         )
+    )
+    if filtered != users:
+        await ctx.channel.send("Wait, someone's missing? Here's why")
+        if [user for user in users if not user.bot] == filtered:
+            await ctx.channel.send(
+                ":robot: I can't dm other bots, you know. ~~They actually blocked me :sob:~~"
+            )
+        elif ctx.author.id in {user.id for user in users}:
+            await ctx.channel.send(":mirror: You can't send a cc to yourself-")
+        else:  # Both
+            await ctx.channel.send(
+                ":robot: I can't dm other bots, you know. ~~They actually blocked me :sob:~~"
+            )
+            await ctx.channel.send(":mirror: Also, you can't send a cc to yourself.")
 
 
 @slash.slash(
@@ -138,23 +147,32 @@ async def cc(ctx, *users) -> None:
 )
 async def bcc(ctx, *users) -> None:
     await ctx.defer()
-    for user in users:
-        if user.bot:
-            await ctx.channel.send(
-                f":x: Dude, why are trying to bcc bots? I cannot dm {user.mention}"
-            )
-            continue
+    filtered = [user for user in users if not (user.bot or user.id == ctx.author.id)]
+    for user in filtered:
         await (user.dm_channel or await user.create_dm()).send(
             await create_bcc_message(ctx)
         )
-        await ctx.send(
-            "I have BCC'd the following people:\n"
-            + (
-                await make_list(
-                    f"`{person.name}#{person.discriminator}`" for person in users
-                )
+    await ctx.send(
+        "I have BCC'd the following people:\n"
+        + (
+            await make_list(
+                f"`{person.name}#{person.discriminator}`" for person in filtered
             )
         )
+    )
+    if filtered != users:
+        await ctx.channel.send("Wait, someone's missing? Here's why:")
+        if [user for user in users if not user.bot] == filtered:
+            await ctx.channel.send(
+                ":robot: I can't dm other bots, you know. ~~They actually blocked me :sob:~~"
+            )
+        elif ctx.author.id in {user.id for user in users}:
+            await ctx.channel.send(":mirror: You can't send a bcc to yourself-")
+        else:  # Both
+            await ctx.channel.send(
+                ":robot: I can't dm other bots, you know. ~~They actually blocked me :sob:~~"
+            )
+            await ctx.channel.send(":mirror: Also, you can't send a bcc to yourself.")
 
 
 async def create_bcc_message(ctx):
@@ -177,7 +195,7 @@ async def create_cc_message(ctx, other_people):
         + (await quote(from_message.content))
         + f"\n*Here: {from_message.jump_url}*\n"
         + "\nOther people who have also been CC'd are:\n"
-        + (await make_list(person.name for person in other_people))
+        + (await make_list(person.mention for person in other_people))
         + "\n"
     )
 
