@@ -54,7 +54,7 @@ Basically [`/cc`](#cc-someone-) but the dm message doesn't tell them who else yo
 
 #### `/poll question, choice1, choice2, ...`
 
-> Ask a multi-choice poll (mutually exclusive options are currently not supported
+> Ask a multi-choice poll (not mutually exclusive)
 
 Basically, ~~I copied [Dyno's command]~~ this is useful if you want a group vote. This command will also add the nessecary reactions.
 
