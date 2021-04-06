@@ -35,7 +35,7 @@ While Discord's find feature is nice, typing `/igotpinged` saves a lot of keystr
 
 #### `/cc @someone, ...`
 
-> Sends a dm to the people you `/cc`'d with your latest message contents and link. Also tells them who else you CC'd
+> Sends a dm to the people you `/cc`'d with your last message's contents and jump-link. Also tells them who else you CC'd
 
 Because just pinging them is risky.
 
@@ -48,10 +48,23 @@ DMs are a safe and persistent place for dumping messages.
 
 #### `/bcc @someone, ...`
 
-> Sends a dm to the people you `/cc`'d with your latest message contents and link
+> Sends a dm to the people you `/bcc`'d with your last message's contents and jump-link
 
 Basically [`/cc`](#cc-someone-) but the dm message doesn't tell them who else you've CC'd.
 
+#### `/poll question, choice1, choice2, ...`
+
+> Ask a multi-choice poll (mutually exclusive options are currently not supported
+
+Basically, ~~I copied [Dyno's command]~~ this is useful if you want a group vote. This command will also add the nessecary reactions.
+
+**NOTE:** The current limit of choices is 10
+
+#### `/yesno question`
+
+> Ask a yes-or-no question
+
+Because yes. Or was it no?
 
 #### `/???`
 
