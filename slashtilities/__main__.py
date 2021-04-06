@@ -103,39 +103,57 @@ def create_person_options(maximum: int):
     return output
 
 
-@slash.slash(
-    name="cc",  # TODO: Add "whopingedme" alias
+@slash.slash(  # TODO: Refactor to remove code duplication. This and BCC
+    name="cc",
     description="Send a carbon copy of your last message to other people in dms",
     guild_ids=get_testing_guilds(),
     options=create_person_options(10),
 )
 async def cc(ctx, *users) -> None:
-    ctx.defer()
+    await ctx.defer()
     for user in users:
-        print("DMing a user")
-        (user.dm_channel or await user.create_dm()).send(
-            await create_cc_message(ctx, users)
+        if user.bot:
+            await ctx.channel.send(
+                f":x: Dude, why are trying to cc bots? I cannot dm {user.mention}"
+            )
+            continue
+        await (user.dm_channel or await user.create_dm()).send(
+            await create_bcc_message(ctx)
         )
-        ctx.send(
+        await ctx.send(
             "I have CC'd the following people:\n"
-            + "\n - ".join(person.name for person in users)
+            + (
+                await make_list(
+                    f"`{person.name}#{person.discriminator}`" for person in users
+                )
+            )
         )
 
 
 @slash.slash(
-    name="bcc",  # TODO: Add "whopingedme" alias
+    name="bcc",
     description="Send a blind carbon copy of your last message to other people in dms",
     guild_ids=get_testing_guilds(),
     options=create_person_options(10),
 )
 async def bcc(ctx, *users) -> None:
-    ctx.defer()
+    await ctx.defer()
     for user in users:
-        print("DMing a user")
-        (user.dm_channel or await user.create_dm()).send(await create_bcc_message(ctx))
-        ctx.send(
+        if user.bot:
+            await ctx.channel.send(
+                f":x: Dude, why are trying to bcc bots? I cannot dm {user.mention}"
+            )
+            continue
+        await (user.dm_channel or await user.create_dm()).send(
+            await create_bcc_message(ctx)
+        )
+        await ctx.send(
             "I have BCC'd the following people:\n"
-            + "\n - ".join(person.name for person in users)
+            + (
+                await make_list(
+                    f"`{person.name}#{person.discriminator}`" for person in users
+                )
+            )
         )
 
 
@@ -143,8 +161,10 @@ async def create_bcc_message(ctx):
     return (
         f"You have been BCC'd by {ctx.author.mention}.\n"
         + "Message:\n"
-        + "\n > ".join(
-            await get_last_message_from(ctx.author, channel=ctx.channel).splitlines()
+        + (
+            await quote(
+                (await get_last_message_from(ctx.author, channel=ctx.channel)).content
+            )
         )
         + "\nThis is a BCC (Blind Carbon Copy)"
         + "\n"
@@ -155,13 +175,29 @@ async def create_cc_message(ctx, other_people):
     return (
         f"You have been CC'd by {ctx.author.mention}.\n"
         + "Message:\n"
-        + "\n > ".join(
-            await get_last_message_from(ctx.author, channel=ctx.channel).splitlines()
+        + (
+            await quote(
+                (await get_last_message_from(ctx.author, channel=ctx.channel)).content
+            )
         )
         + "\nOther people who have also been CC'd are:\n"
-        + "\n - ".join(person.mention for person in other_people)
+        + (await make_list(person.name for person in other_people))
         + "\n"
     )
+
+
+async def quote(msg: str) -> str:
+    output = ""
+    for line in msg.splitlines():
+        output += "> " + line
+    return output
+
+
+async def make_list(stuff) -> str:
+    output = ""
+    for item in stuff:
+        output += " - " + item + "\n"
+    return output
 
 
 # Commented out because should be a mod-only command
