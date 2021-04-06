@@ -105,7 +105,7 @@ def create_person_options(maximum: int):
 
 @slash.slash(  # TODO: Refactor to remove code duplication. This and BCC
     name="cc",
-    description="Send a carbon copy of your last message to other people in dms",
+    description="CC other people your last message",
     guild_ids=get_testing_guilds(),
     options=create_person_options(10),
 )
@@ -141,7 +141,7 @@ async def cc(ctx, *users) -> None:
 
 @slash.slash(
     name="bcc",
-    description="Send a blind carbon copy of your last message to other people in dms",
+    description="BCC other people your last message",
     guild_ids=get_testing_guilds(),
     options=create_person_options(10),
 )
@@ -258,7 +258,7 @@ def create_poll_options(maximum: int):
 
 @slash.slash(
     name="poll",
-    description="Send a multi-choice poll. (Mutually exclusive options not supported)",
+    description="Send a multi-choice poll (not mutually exclusive)",
     guild_ids=get_testing_guilds(),
     options=create_poll_options(10),
 )
@@ -290,7 +290,7 @@ def get_emoji_for(thing: int) -> str:
 
 @slash.slash(
     name="yesno",
-    description="Send a yes or no question (Mutually exclusive options not supported)",
+    description="Send a yes-or-no question (not mutually exclusive)",
     guild_ids=get_testing_guilds(),
     options=[
         create_option(
