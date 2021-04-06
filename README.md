@@ -33,6 +33,24 @@ When you're in servers where people talk 100 messages a minute, this command is 
 
 While Discord's find feature is nice, typing `/igotpinged` saves a lot of keystrokes or (in the case of mobile) tapping.
 
+#### `/cc @someone, ...`
+
+> Sends a dm to the people you `/cc`'d with your latest message contents and link. Also tells them who else you CC'd
+
+Because just pinging them is risky.
+
+1. Your original message (or the message you used to ping them) can get deleted
+2. And if number 1 happens, your reputation will be ruined because you "ghost pinged them"
+
+DMs are a safe and persistent place for dumping messages.
+
+#### `/bcc @someone, ...`
+
+> Sends a dm to the people you `/cc`'d with your latest message contents and link
+
+Basically [`/cc`](#cc-someone) but the dm message doesn't tell them who else you've CC'd.
+
+
 #### `/???`
 
 > ???
