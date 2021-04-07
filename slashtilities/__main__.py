@@ -1,9 +1,10 @@
 # TODO: Use embeds
 import asyncio
+import datetime
 import os
 
 import discord
-import discord.ext.commands
+from discord import Color, Embed
 from discord_slash import SlashCommand  # Importing the newly installed library.
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option, remove_all_commands
@@ -36,7 +37,13 @@ def get_testing_guilds():
 async def ping(ctx):
     gotten_ping = client.latency * 1000
     print(f"Recorded ping: {gotten_ping} ms")
-    await ctx.send(f":ping_pong: Pong! | (`{gotten_ping:.4}` ms)")
+    await ctx.send(
+        embed=Embed(
+            title=":ping_pong: Pong!",
+            description=f"{gotten_ping:.4} ms",
+            color=Color.blue(),
+        )
+    )
 
 
 @slash.slash(
@@ -50,8 +57,14 @@ async def igotpinged(ctx):
         last_msg = await get_last_message_from(ctx.author, channel=ctx.channel)
     except discord.errors.Forbidden:
         await ctx.send(
-            ":x: How do you expect me to find your last message if "
-            "I don't even have access to this channel???"
+            embed=Embed(
+                title=":x: Error",
+                description=(
+                    "How do you expect me to find your last message if "
+                    "I don't even have access to this channel???"
+                ),
+                color=Color.red(),
+            ).set_footer(text="What an idiot")
         )
     else:
         print("Getting last ping...", end=" ")
@@ -66,19 +79,36 @@ async def igotpinged(ctx):
         if len(ping_msgs) > 0:
             print("\N{WHITE HEAVY CHECK MARK}")
             if len(ping_msgs) > 1:
-                await ctx.send("These people did:")
+                to_send = Embed(
+                    title=":mag: Found!",
+                    description="The following people did:",
+                    color=Color.green(),
+                )
                 for message in ping_msgs:
-                    await ctx.channel.send(
-                        f":mag: {message.author}, right here: {message.jump_url}"
+                    to_send.add_field(
+                        name=message.author,
+                        value=f"[**Jump to message**]({message.jump_url})",
+                        inline=False,
                     )
+                await ctx.send(embed=to_send)
             else:
                 await ctx.send(
-                    f":mag: {ping_msgs[0].author} did, right here: {ping_msgs[0].jump_url}"
+                    embed=(
+                        Embed(
+                            title=":mag: Found!",
+                            description=f"{ping_msgs[0].author.mention} pinged you [**here**]({ping_msgs[0].jump_url})",
+                            color=Color.green(),
+                        )
+                    )
                 )
         else:
             print("\N{GHOST}")
             await ctx.send(
-                ":ghost: I didn't find anyone. You probably got ***ghost pinged***"
+                embed=Embed(
+                    title=":ghost: Not found! D:",
+                    description="I didn't find anyone. You probably got ***ghost pinged***",
+                    color=Color.red(),
+                )
             )
     print("END OF `igotpinged`")
 
@@ -123,30 +153,33 @@ def create_person_options(maximum: int):
     options=create_person_options(10),
 )
 async def cc(ctx, *users) -> None:
-    await cc_helper(
-        ctx, create_cc_message, "I have CC'd the following people:\n", "CC", users
-    )
+    await cc_helper(ctx, create_cc_message, "CC", users)
 
 
-async def cc_helper(ctx, msg_func, after_msg, atype, users):
+async def cc_helper(ctx, msg_func, atype, users):
     await ctx.defer()
     filtered = [user for user in users if not (user.bot or user.id == ctx.author.id)]
     if filtered:
         last_msg = await get_last_message_from(ctx.author, channel=ctx.channel)
         for user in filtered:
             await (user.dm_channel or await user.create_dm()).send(
-                await msg_func(
+                embed=await msg_func(
                     ctx,
                     filtered,
                     from_message=last_msg,
                 )
             )
         await ctx.send(  # XXX: Remove for BCC?
-            after_msg
-            + (await make_list(f"`{person}`" for person in filtered))
-            + "\nYour message:\n"
-            + (await quote(last_msg))
-            + f"\n{last_msg.jump_url}"
+            embed=Embed(
+                title=f"I have {atype}'d the following people:",
+                description=await make_list(person.mention for person in filtered),
+                color=Color.green(),
+            ).add_field(
+                name=f"Your message I {atype}'d them':",
+                value=await quote(last_msg.content)
+                + f"\n\n[**Jump to message**]({last_msg.jump_url})",
+                inline=False,
+            )
         )
     if set(filtered) != set(users):
         if filtered:
@@ -173,37 +206,65 @@ async def cc_helper(ctx, msg_func, after_msg, atype, users):
     options=create_person_options(10),
 )
 async def bcc(ctx, *users) -> None:
-    await cc_helper(
-        ctx, create_bcc_message, "I have BCC'd the following people:\n", "BCC", users
-    )
+    await cc_helper(ctx, create_bcc_message, "BCC", users)
 
 
 async def create_bcc_message(ctx, _, from_message):
     return (
-        f"You have been BCC'd by {ctx.author.mention}.\n"
-        + "Message:\n"
-        + (await quote(from_message))
-        + f"\n*Here: {from_message.jump_url}*\n"
-        + "\nThis is a BCC (Blind Carbon Copy)"
-        + "\n"
+        Embed(title="", color=Color.blurple())
+        .set_author(
+            name=f"You have been BCC'd by {ctx.author}.\n",
+            icon_url=ctx.author.avatar_url,
+        )
+        .add_field(
+            name="Message:", value=await quote(from_message.content), inline=False
+        )
+        .add_field(
+            name="Original Message:",
+            value=f"[**Jump to message**]({from_message.jump_url})",
+            inline=False,
+        )
+        .set_footer(
+            text=datetime.datetime.today().strftime(
+                "This is a BCC (Blind Carbon Copy) made at %B, %d, %Y (%m/%d/%Y) %I:%M %p"
+            )
+        )
     )
 
 
 async def create_cc_message(ctx, other_people, from_message):
     return (
-        f"You have been CC'd by {ctx.author.mention}.\n"
-        + "Message:\n"
-        + (await quote(from_message))
-        + f"\n*Here: {from_message.jump_url}*\n"
-        + "\nOther people who have also been CC'd are:\n"
-        + (await make_list(person.mention for person in other_people))
-        + "\n"
+        Embed(title="", color=Color.blurple())
+        .set_author(
+            name=f"You have been CC'd by {ctx.author}.\n",
+            icon_url=ctx.author.avatar_url,
+        )
+        .add_field(
+            name="Message:", value=await quote(from_message.content), inline=False
+        )
+        .add_field(
+            name="Other people who have also been CC'd are:",
+            value=await make_list(
+                person.mention for person in other_people if person != ctx.author
+            ),
+            inline=False,
+        )
+        .add_field(
+            name="Original Message:",
+            value=f"[**Jump to message**]({from_message.jump_url})",
+            inline=False,
+        )
+        .set_footer(
+            text=datetime.datetime.today().strftime(
+                "This is a CC (Carbon Copy) made at %B, %d, %Y (%m/%d/%Y) %I:%M %p"
+            )
+        )
     )
 
 
-async def quote(msg: discord.Message) -> str:
+async def quote(msg: str) -> str:
     output = ""
-    for line in msg.content.splitlines():
+    for line in msg.splitlines():
         output += "> " + line
     return output
 
@@ -265,8 +326,17 @@ def create_poll_options(maximum: int):
 )
 async def poll(ctx, question: str, *choices):
     msg = await ctx.send(
-        f"{ctx.author.mention} asks:\n\n> {question}\n\n"
-        + await make_numbered_list(choices),
+        embed=Embed(
+            title=f'"{question}"',
+            description=await make_numbered_list(choices),
+            color=Color.blue(),
+        )
+        .set_author(name=f"{ctx.author} asks:", icon_url=ctx.author.avatar_url)
+        .set_footer(
+            text=datetime.datetime.today().strftime(
+                "Poll made at %B, %d, %Y (%m/%d/%Y) %I:%M %p"
+            )
+        ),
         allowed_mentions=discord.AllowedMentions().none(),
     )
     for emoji in map(get_emoji_for, range(1, len(choices) + 1)):
@@ -303,7 +373,15 @@ def get_emoji_for(thing: int) -> str:
     ],
 )
 async def yesno(ctx, question: str):
-    msg = await ctx.send(f"{ctx.author.mention} asks:\n> {question}")
+    msg = await ctx.send(
+        embed=Embed(title="", description=await quote(question), color=Color.blue())
+        .set_author(name=f"{ctx.author} asks:", icon_url=ctx.author.avatar_url)
+        .set_footer(
+            text=datetime.datetime.today().strftime(
+                "Poll made at %B, %d, %Y (%m/%d/%Y) %I:%M %p"
+            )
+        )
+    )
     await msg.add_reaction("\N{THUMBS UP SIGN}")
     await msg.add_reaction("\N{THUMBS DOWN SIGN}")
 
