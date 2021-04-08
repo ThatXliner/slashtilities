@@ -151,6 +151,17 @@ mypy = ">=0.782"
 typing-extensions = ">=3.7.4,<4.0.0"
 
 [[package]]
+name = "disputils"
+version = "0.1.3"
+description = "Some utilities for discord.py. Making Discord bot development easier."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+"discord.py" = ">=1,<2"
+
+[[package]]
 name = "idna"
 version = "3.1"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -409,7 +420,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "5c64bdf57a6257f2ef9150141602ab6994d54ccf1e3a2c01aa8e4a4fbec27c91"
+content-hash = "71913168376c6a39400add577913c2dd3c76f6bf6dddbf84d53ad62882dd1d9e"
 
 [metadata.files]
 aiohttp = [
@@ -497,6 +508,10 @@ discord-py-slash-command = [
 "discord.py-stubs" = [
     {file = "discord.py-stubs-1.6.3.tar.gz", hash = "sha256:7992e59e85dd9b0fe2fe9332b340ac13563522058da7ceeb449444bd1c0ac985"},
     {file = "discord.py_stubs-1.6.3-py3-none-any.whl", hash = "sha256:1ff938e5a4819b83ac93029817f255ab469aac05f6e0f6ce4fd93137aa5435e1"},
+]
+disputils = [
+    {file = "disputils-0.1.3-py3-none-any.whl", hash = "sha256:d80c29b68a58cd45660388edd3031dbf92072d1d2e163e2810935687b7547217"},
+    {file = "disputils-0.1.3.tar.gz", hash = "sha256:ea05bac8239e3b8dabfa10db9378c3ccd3b26522d659ec9f386e39edd55be372"},
 ]
 idna = [
     {file = "idna-3.1-py3-none-any.whl", hash = "sha256:5205d03e7bcbb919cc9c19885f9920d622ca52448306f2377daede5cf3faac16"},
