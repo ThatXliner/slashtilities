@@ -21,7 +21,10 @@ async def on_ready():
 
 
 def get_testing_guilds():
-    return None
+    if os.environ.get("DISCORD_TEST_GUILDS") is not None:
+        return os.environ["DISCORD_TEST_GUILDS"].split(",") or None
+    else:
+        return None
 
 
 # if os.environ.get("DISCORD_TESTING") == "1":
