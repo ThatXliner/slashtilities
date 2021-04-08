@@ -49,7 +49,7 @@ async def igotpinged(ctx: commands.Context) -> None:
                     embed=(
                         discord.Embed(
                             title=":mag: Found!",
-                            description=f"{ping_msgs[0].author.mention} pinged you [**here**]({ping_msgs[0].jump_url})\n[**Your last message**]({last_msg.jump_url})",
+                            description=f"{ping_msgs[0].author.mention} pinged you [**here**]({ping_msgs[0].jump_url})\n\n[**Your last message**]({last_msg.jump_url})",
                             color=discord.Color.green(),
                         )
                     )
@@ -59,7 +59,7 @@ async def igotpinged(ctx: commands.Context) -> None:
             await ctx.send(
                 embed=discord.Embed(
                     title=":ghost: Not found! D:",
-                    description=f"I didn't find anyone. You probably got ***ghost pinged***\n[**Your last message**]({last_msg.jump_url})",
+                    description=f"I didn't find anyone. You probably got ***ghost pinged***\n\n[**Your last message**]({last_msg.jump_url})",
                     color=discord.Color.red(),
                 ).set_footer(text="Imagine ghost pinging")
             )
