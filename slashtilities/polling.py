@@ -25,8 +25,15 @@ async def poll(ctx: commands.Context, question: str, *choices: str) -> None:
         .set_footer(text=await utils.basically_today("Poll made at {}")),
         allowed_mentions=discord.AllowedMentions().none(),
     )
-    for emoji in map(get_emoji_for, range(1, len(choices) + 1)):
-        await msg.add_reaction(emoji)
+    try:
+        for emoji in map(get_emoji_for, range(1, len(choices) + 1)):
+            await msg.add_reaction(emoji)
+    except discord.errors.Forbidden:
+        ctx.channel.send(
+            embed=utils.errorize(
+                "I could not add the nessecary reactions to the poll above"
+            ).set_footer(text="Gimmei perms now")
+        )
 
 
 def get_emoji_for(thing: int) -> str:
@@ -55,8 +62,15 @@ async def yesno(ctx: commands.Context, question: str) -> None:
         .set_author(name=f"{ctx.author} asks:", icon_url=str(ctx.author.avatar_url))
         .set_footer(text=await utils.basically_today("Poll made at {}")),
     )
-    await msg.add_reaction("\N{THUMBS UP SIGN}")
-    await msg.add_reaction("\N{THUMBS DOWN SIGN}")
+    try:
+        await msg.add_reaction("\N{THUMBS UP SIGN}")
+        await msg.add_reaction("\N{THUMBS DOWN SIGN}")
+    except discord.errors.Forbidden:
+        ctx.channel.send(
+            embed=utils.errorize(
+                "I could not add the nessecary reactions to the poll above"
+            ).set_footer(text="Gimmei perms now")
+        )
 
 
 def create_poll_options(maximum: int) -> List[Dict[str, str]]:

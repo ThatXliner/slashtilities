@@ -17,16 +17,11 @@ async def get_last_message_from(
     return None
 
 
-async def errorize(ctx: commands.Context) -> None:
-    await ctx.send(
-        embed=discord.Embed(
-            title=":x: Error",
-            description=(
-                "How do you expect me to find your last message if "
-                "I don't even have access to this channel???"
-            ),
-            color=discord.Color.red(),
-        ).set_footer(text="What an idiot")
+async def errorize(error_msg: str) -> discord.Embed:
+    return discord.Embed(
+        title=":x: Error",
+        description=error_msg,
+        color=discord.Color.red(),
     )
 
 
