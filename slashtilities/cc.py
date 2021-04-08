@@ -20,6 +20,7 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
                     ctx,
                     filtered,
                     from_message=last_msg,
+                    to=user,
                 )
             )
         await ctx.send(  # XXX: Remove for BCC?
@@ -56,7 +57,7 @@ async def bcc(ctx: commands.Context, *users) -> None:
     await cc_helper(ctx, create_bcc_message, "BCC", users)
 
 
-async def create_bcc_message(ctx: commands.Context, _, from_message):
+async def create_bcc_message(ctx: commands.Context, _, from_message, to):
     return (
         discord.Embed(title="", description="", color=discord.Color.blurple())
         .set_author(
@@ -79,7 +80,7 @@ async def create_bcc_message(ctx: commands.Context, _, from_message):
     )
 
 
-async def create_cc_message(ctx: commands.Context, other_people, from_message):
+async def create_cc_message(ctx: commands.Context, other_people, from_message, to):
     return (
         discord.Embed(title="", description="", color=discord.Color.blurple())
         .set_author(
@@ -92,7 +93,9 @@ async def create_cc_message(ctx: commands.Context, other_people, from_message):
         .add_field(
             name="Other people who have also been CC'd are:",
             value=await make_list(
-                person.mention for person in other_people if person != ctx.author
+                person.mention
+                for person in other_people
+                if person not in {ctx.author, to}
             ),
             inline=False,
         )
