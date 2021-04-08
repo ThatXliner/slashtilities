@@ -6,7 +6,12 @@ from slashtilities import utils
 
 
 async def cc(ctx: commands.Context, *users) -> None:
-    await cc_helper(ctx, create_cc_message, "CC", users)
+    await utils.disable(
+        ctx,
+        "Top.gg requires any bot command that dms arbitrary members to have an opt-out option.\n"
+        "I have currently not implemented that for it requires a databse.",
+    )
+    # await cc_helper(ctx, create_cc_message, "CC", users)
 
 
 async def cc_helper(ctx: commands.Context, msg_func, atype, users):
@@ -54,7 +59,12 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
 
 
 async def bcc(ctx: commands.Context, *users) -> None:
-    await cc_helper(ctx, create_bcc_message, "BCC", users)
+    await utils.disable(
+        ctx,
+        "Top.gg requires any bot command that dms arbitrary members to have an opt-out option.\n"
+        "I have currently not implemented that for it requires a databse.",
+    )
+    # await cc_helper(ctx, create_bcc_message, "BCC", users)
 
 
 async def create_bcc_message(ctx: commands.Context, _, from_message, to):

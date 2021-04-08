@@ -30,6 +30,16 @@ async def errorize(ctx: commands.Context) -> None:
     )
 
 
+async def disable(ctx, why: str = "The devs have not given why") -> None:
+    await ctx.send(
+        embed=discord.Embed(
+            title=":warning: This command is disabled",
+            description=why,
+            color=discord.Color.orange(),
+        ).set_footer(text="Yeah, sorry")
+    )
+
+
 async def quote(msg: str) -> str:
     output = ""
     for line in msg.splitlines():
