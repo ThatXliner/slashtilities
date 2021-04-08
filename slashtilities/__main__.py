@@ -11,7 +11,12 @@ from slashtilities import cc, igotpinged, polling
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = discord.Intents().default()
-client = discord.Client(intents=intents, activity=discord.Game("Being an epic bot"))
+client = discord.Client(
+    intents=intents,
+    activity=discord.Activity(
+        type=discord.ActivityType.watching, name="your every step >:)"
+    ),
+)
 slash = SlashCommand(client, sync_commands=True)
 
 
