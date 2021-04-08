@@ -24,7 +24,7 @@ Other than being a basic sanity check, this command is quite useless.
 
 #### `/igotpinged`
 
-> Get the last message pinging you after your last message sent in the channel
+> Get the last message(s) pinging you after your last message sent in the channel
 
 When you're in servers where people talk 100 messages a minute, this command is useful when
 
