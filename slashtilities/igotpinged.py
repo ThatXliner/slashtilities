@@ -42,7 +42,8 @@ async def igotpinged(ctx: commands.Context) -> None:
                 to_paginate = [
                     discord.Embed(
                         title=":mag: Found!",
-                        description="Click on the pagination buttons to see",
+                        description="Click on the pagination buttons to see\n"
+                        "who pinged you (times out *after 100 seconds*)",
                         color=discord.Color.green(),
                     ).add_field(
                         name="Your last message",
@@ -58,14 +59,20 @@ async def igotpinged(ctx: commands.Context) -> None:
                 to_paginate.extend(
                     [
                         discord.Embed(
-                            title=f"{author} pinged you in these messages:",
+                            title=f"",
                             description=await make_list(msgs),
-                        ).set_author(name=author.name, icon_url=str(author.avatar_url))
+                            color=discord.Color.green(),
+                        ).set_author(
+                            name=f"{author} pinged you in these messages:",
+                            icon_url=str(author.avatar_url),
+                        )
                         for author, msgs in author_and_pings.items()
                     ]
                 )
                 paginator = BotEmbedPaginator(ctx, to_paginate)
-                await paginator.run()
+                await paginator.run(
+                    channel=ctx  # Very hacky. It'll think ctx.send == channel.send
+                )  # But it works
             else:
                 await ctx.send(
                     embed=(
