@@ -1,6 +1,17 @@
+from collections import defaultdict
+from typing import DefaultDict, List
+
 import discord
 from discord.ext import commands
+from disputils import BotEmbedPaginator
 from slashtilities import utils
+
+
+async def make_list(stuff: List[str]) -> str:
+    output = ""
+    for item in stuff:
+        output += f" - [**Jump to message**]({item})\n"
+    return output
 
 
 async def igotpinged(ctx: commands.Context) -> None:
@@ -28,22 +39,33 @@ async def igotpinged(ctx: commands.Context) -> None:
         if len(ping_msgs) > 0:
             print("\N{WHITE HEAVY CHECK MARK}")
             if len(ping_msgs) > 1:
-                to_send = discord.Embed(
-                    title=":mag: Found!",
-                    description="The following people did:",
-                    color=discord.Color.green(),
-                ).add_field(
-                    name="Your last message",
-                    value=f"[**Jump to message**]({last_msg.jump_url})",
-                    inline=False,
-                )
-                for message in ping_msgs:
-                    to_send.add_field(
-                        name=message.author,
-                        value=f"[**Jump to message**]({message.jump_url})",
+                to_paginate = [
+                    discord.Embed(
+                        title=":mag: Found!",
+                        description="Click on the pagination buttons to see",
+                        color=discord.Color.green(),
+                    ).add_field(
+                        name="Your last message",
+                        value=f"[**Jump to message**]({last_msg.jump_url})",
                         inline=False,
                     )
-                await ctx.send(embed=to_send)
+                ]
+                author_and_pings: DefaultDict[discord.Member, List[str]] = defaultdict(
+                    list
+                )
+                for message in ping_msgs:
+                    author_and_pings[message.author].append(message.jump_url)
+                to_paginate.extend(
+                    [
+                        discord.Embed(
+                            title=f"{author} pinged you in these messages:",
+                            description=await make_list(msgs),
+                        ).set_author(name=author.name, icon_url=str(author.avatar_url))
+                        for author, msgs in author_and_pings.items()
+                    ]
+                )
+                paginator = BotEmbedPaginator(ctx, to_paginate)
+                await paginator.run()
             else:
                 await ctx.send(
                     embed=(
