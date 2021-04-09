@@ -8,8 +8,9 @@ from slashtilities import utils
 async def cc(ctx: commands.Context, *users) -> None:
     await utils.disable(
         ctx,
-        "Top.gg requires any bot command that dms arbitrary members to have an opt-out option.\n"
-        "I have currently not implemented that for it requires a databse.",
+        "Top.gg requires that **any bot command that dms arbitrary members to have an opt-out option**. "
+        "I have currently not implemented an opt-out option because it requires a database and "
+        "I haven't figured out databases (screw you, [SQL](https://en.wikipedia.org/wiki/SQL) and [Heroku](https://heroku.com))",
     )
     # await cc_helper(ctx, create_cc_message, "CC", users)
 
@@ -64,9 +65,9 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
 async def bcc(ctx: commands.Context, *users) -> None:
     await utils.disable(
         ctx,
-        "Top.gg requires that **any bot command that dms arbitrary members to have an opt-out option**.\n"
-        "I have currently not implemented an opt-out option because it requires a database and\n"
-        "I haven't figured out databases (screw you, SQL)",
+        "Top.gg requires that **any bot command that dms arbitrary members to have an opt-out option**. "
+        "I have currently not implemented an opt-out option because it requires a database and "
+        "I haven't figured out databases (screw you, [SQL](https://en.wikipedia.org/wiki/SQL) and [Heroku](https://heroku.com))",
     )
     # await cc_helper(ctx, create_bcc_message, "BCC", users)
 
