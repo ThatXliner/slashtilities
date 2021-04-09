@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option
-from slashtilities import utils
+from slashtilities import log, utils
 
 
 async def make_numbered_list(stuff: Iterable[str]) -> str:
@@ -15,6 +15,10 @@ async def make_numbered_list(stuff: Iterable[str]) -> str:
 
 
 async def poll(ctx: commands.Context, question: str, *choices: str) -> None:
+    log.info("START OF `poll`")
+    log.info("Making poll")
+    log.debug({question: choices})
+    log.info("Poll made; sending response...")
     msg = await ctx.send(
         embed=discord.Embed(
             title=f'"{question}"',
@@ -25,7 +29,9 @@ async def poll(ctx: commands.Context, question: str, *choices: str) -> None:
         .set_footer(text=await utils.basically_today("Poll made at {}")),
         allowed_mentions=discord.AllowedMentions().none(),
     )
+    log.info("Success!")
     try:
+        log.info("Trying to add reactions...")
         for emoji in map(get_emoji_for, range(1, len(choices) + 1)):
             await msg.add_reaction(emoji)
     except discord.errors.Forbidden:
@@ -34,9 +40,13 @@ async def poll(ctx: commands.Context, question: str, *choices: str) -> None:
                 "I could not add the nessecary reactions to the poll above"
             ).set_footer(text="Gimmei perms now")
         )
+    else:
+        log.info("Add reactions!")
+    log.info("END OF `poll`")
 
 
 def get_emoji_for(thing: int) -> str:
+    log.info(f"Getting emoji {thing}")
     emoji_dict = {
         1: "1️⃣",
         2: "2️⃣",
@@ -49,10 +59,14 @@ def get_emoji_for(thing: int) -> str:
         9: "9️⃣",
         10: "🔟",
     }
+    log.debug(emoji_dict)
+    log.info(f"Got {emoji_dict[thing]}")
     return emoji_dict[thing]
 
 
 async def yesno(ctx: commands.Context, question: str) -> None:
+    log.info("START OF `yesno`")
+    log.info("Sending response")
     msg = await ctx.send(
         embed=discord.Embed(
             title="",
@@ -62,7 +76,9 @@ async def yesno(ctx: commands.Context, question: str) -> None:
         .set_author(name=f"{ctx.author} asks:", icon_url=str(ctx.author.avatar_url))
         .set_footer(text=await utils.basically_today("Poll made at {}")),
     )
+    log.info("Success!")
     try:
+        log.info("Trying to add reactions...")
         await msg.add_reaction("\N{THUMBS UP SIGN}")
         await msg.add_reaction("\N{THUMBS DOWN SIGN}")
     except discord.errors.Forbidden:
@@ -71,6 +87,9 @@ async def yesno(ctx: commands.Context, question: str) -> None:
                 "I could not add the nessecary reactions to the poll above"
             ).set_footer(text="Gimmei perms now")
         )
+    else:
+        log.info("Added reactions!")
+    log.info("END OF `yesno`")
 
 
 def create_poll_options(maximum: int) -> List[Dict[str, str]]:
