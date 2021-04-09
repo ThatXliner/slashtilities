@@ -10,23 +10,18 @@ async def get_last_message_from(
 ) -> Optional[str]:
     print("Getting last message...", end=" ")
     async for message in channel.history(oldest_first=False, limit=None):
-        if message.author.id == author.id:
+        if message.author == author:
             print("\N{WHITE HEAVY CHECK MARK} found")
             return message
     print("\N{CROSS MARK} Not found")
     return None
 
 
-async def errorize(ctx: commands.Context) -> None:
-    await ctx.send(
-        embed=discord.Embed(
-            title=":x: Error",
-            description=(
-                "How do you expect me to find your last message if "
-                "I don't even have access to this channel???"
-            ),
-            color=discord.Color.red(),
-        ).set_footer(text="What an idiot")
+async def errorize(error_msg: str) -> discord.Embed:
+    return discord.Embed(
+        title=":x: Error",
+        description=error_msg,
+        color=discord.Color.red(),
     )
 
 

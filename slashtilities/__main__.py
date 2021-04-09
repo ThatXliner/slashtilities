@@ -11,7 +11,12 @@ from slashtilities import cc, igotpinged, polling
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = discord.Intents().default()
-client = discord.Client(intents=intents, activity=discord.Game("Being an epic bot"))
+client = discord.Client(
+    intents=intents,
+    activity=discord.Activity(
+        type=discord.ActivityType.watching, name="your every step >:)"
+    ),
+)
 slash = SlashCommand(client, sync_commands=True)
 
 
@@ -21,7 +26,10 @@ async def on_ready():
 
 
 def get_testing_guilds():
-    return None
+    if os.environ.get("DISCORD_TEST_GUILDS") is not None:
+        return os.environ["DISCORD_TEST_GUILDS"].split(",") or None
+    else:
+        return None
 
 
 # if os.environ.get("DISCORD_TESTING") == "1":

@@ -8,8 +8,9 @@ from slashtilities import utils
 async def cc(ctx: commands.Context, *users) -> None:
     await utils.disable(
         ctx,
-        "Top.gg requires any bot command that dms arbitrary members to have an opt-out option.\n"
-        "I have currently not implemented that for it requires a databse.",
+        "Top.gg requires that **any bot command that dms arbitrary members to have an opt-out option**. "
+        "I have currently not implemented an opt-out option because it requires a database and "
+        "I haven't figured out databases (screw you, [SQL](https://en.wikipedia.org/wiki/SQL) and [Heroku](https://heroku.com))",
     )
     # await cc_helper(ctx, create_cc_message, "CC", users)
 
@@ -19,6 +20,9 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
     filtered = [user for user in users if not (user.bot or user.id == ctx.author.id)]
     if filtered:
         last_msg = await utils.get_last_message_from(ctx.author, channel=ctx.channel)
+        if last_msg is None:
+            ctx.send(embed=utils.errorize(f"Bruh, you have no messages to {atype}"))
+        assert last_msg is None
         for user in filtered:
             await (user.dm_channel or await user.create_dm()).send(
                 embed=await msg_func(
@@ -61,8 +65,9 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
 async def bcc(ctx: commands.Context, *users) -> None:
     await utils.disable(
         ctx,
-        "Top.gg requires any bot command that dms arbitrary members to have an opt-out option.\n"
-        "I have currently not implemented that for it requires a databse.",
+        "Top.gg requires that **any bot command that dms arbitrary members to have an opt-out option**. "
+        "I have currently not implemented an opt-out option because it requires a database and "
+        "I haven't figured out databases (screw you, [SQL](https://en.wikipedia.org/wiki/SQL) and [Heroku](https://heroku.com))",
     )
     # await cc_helper(ctx, create_bcc_message, "BCC", users)
 
