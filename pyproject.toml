@@ -24,6 +24,8 @@ poethepoet = "^0.10.0"
     [tool.poe.tasks.run]
     shell = "if [ -r .env ]; then eval $(grep -v '^#' .env | xargs) poetry run python -m slashtilities; else echo 'You need to make a .env'; fi"
     help = "Run the bot"
+    # How to kill (requires `ret`. https://pypi.org/projects/ret)
+    # `ps aux | egrep  "poe run$" | ret "\w+\s*([^\s]+)" s -g 1 | xargs kill`
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
