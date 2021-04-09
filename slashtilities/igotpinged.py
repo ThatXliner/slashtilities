@@ -27,6 +27,14 @@ async def igotpinged(ctx: commands.Context) -> None:
         )
     else:
         print("Getting last ping...", end=" ")
+        if last_msg is None:
+            await ctx.send(
+                utils.errorize(
+                    "Couldn't find your last message (maybe you didn't send any messages)"
+                )
+            )
+            print("Error")
+            return
         ping_msgs = [
             message
             async for message in ctx.channel.history(
@@ -84,10 +92,9 @@ async def igotpinged(ctx: commands.Context) -> None:
                     )
                 )
         else:
-            print("\N{GHOST}")
             await ctx.send(
                 embed=discord.Embed(
-                    title=":ghost: Not found! D:",
+                    title=":ghost: Not found!",
                     description=f"I didn't find anyone. You probably got ***ghost pinged***\n\n[**Your last message**]({last_msg.jump_url})",
                     color=discord.Color.red(),
                 ).set_footer(text="Imagine ghost pinging")

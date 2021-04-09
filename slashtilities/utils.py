@@ -10,7 +10,7 @@ async def get_last_message_from(
 ) -> Optional[str]:
     print("Getting last message...", end=" ")
     async for message in channel.history(oldest_first=False, limit=None):
-        if message.author.id == author.id:
+        if message.author == author:
             print("\N{WHITE HEAVY CHECK MARK} found")
             return message
     print("\N{CROSS MARK} Not found")
