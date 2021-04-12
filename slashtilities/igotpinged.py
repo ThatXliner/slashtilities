@@ -28,9 +28,11 @@ async def igotpinged(ctx: commands.Context) -> None:
     except discord.errors.Forbidden:
         log.info("Sending response")
         await ctx.send(
-            embed=utils.errorize(
-                "How do you expect me to find your last message if "
-                "I don't even have access to this channel???",
+            embed=(
+                await utils.errorize(
+                    "How do you expect me to find your last message if "
+                    "I don't even have access to this channel???",
+                )
             ).set_footer(text="What an idiot")
         )
         log.info("Success!")
@@ -38,7 +40,7 @@ async def igotpinged(ctx: commands.Context) -> None:
         if last_msg is None:
             log.info("Sending response")
             await ctx.send(
-                utils.errorize(
+                await utils.errorize(
                     "Couldn't find your last message (maybe you didn't send any messages)"
                 )
             )

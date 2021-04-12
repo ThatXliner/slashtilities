@@ -36,8 +36,10 @@ async def poll(ctx: commands.Context, question: str, *choices: str) -> None:
             await msg.add_reaction(emoji)
     except discord.errors.Forbidden:
         ctx.channel.send(
-            embed=utils.errorize(
-                "I could not add the nessecary reactions to the poll above"
+            embed=(
+                await utils.errorize(
+                    "I could not add the nessecary reactions to the poll above"
+                )
             ).set_footer(text="Gimmei perms now")
         )
     else:
@@ -83,8 +85,10 @@ async def yesno(ctx: commands.Context, question: str) -> None:
         await msg.add_reaction("\N{THUMBS DOWN SIGN}")
     except discord.errors.Forbidden:
         ctx.channel.send(
-            embed=utils.errorize(
-                "I could not add the nessecary reactions to the poll above"
+            embed=(
+                await utils.errorize(
+                    "I could not add the nessecary reactions to the poll above"
+                )
             ).set_footer(text="Gimmei perms now")
         )
     else:

@@ -21,7 +21,7 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
     if filtered:
         last_msg = await utils.get_last_message_from(ctx.author, channel=ctx.channel)
         if last_msg is None:
-            ctx.send(embed=utils.errorize(f"Bruh, you have no messages to {atype}"))
+            ctx.send(embed=await utils.errorize(f"Bruh, you have no messages to {atype}"))
         assert last_msg is None
         for user in filtered:
             await (user.dm_channel or await user.create_dm()).send(
