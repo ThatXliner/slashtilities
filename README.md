@@ -66,6 +66,18 @@ This is useful if you want a group vote. This command will also add the nessecar
 
 Because yes. Or was it no?
 
+#### `/invite`
+
+> Our bot's invite links!
+
+Because yes!
+
+#### `/vote`
+
+> Vote for our bot here!
+
+Please.
+
 #### `/???`
 
 > ???
