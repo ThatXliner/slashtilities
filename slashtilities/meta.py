@@ -4,7 +4,7 @@ from slashtilities import log
 
 async def invite(ctx):
     log.info("Sending invite links...")
-    ctx.send(
+    await ctx.send(
         embed=discord.Embed(
             title="Invite links",
             description="Here are some invite links you can use to invite the bot",
@@ -28,7 +28,7 @@ async def invite(ctx):
 
 async def vote(ctx):
     log.info("Sending vote links...")
-    ctx.send(
+    await ctx.send(
         embed=discord.Embed(
             title="Vote links",
             description="Want to help support us and show your thankfulness? Just vote for our bot!",
