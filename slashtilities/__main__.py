@@ -7,7 +7,7 @@ from discord import Color, Embed
 from discord_slash import SlashCommand  # Importing the newly installed library.
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option, remove_all_commands
-from slashtilities import cc, igotpinged, polling
+from slashtilities import cc, igotpinged, meta, polling
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = discord.Intents().default()
@@ -96,7 +96,18 @@ slash.add_slash_command(
         ),
     ],
 )
-
+slash.add_slash_command(
+    meta.invite,
+    name="invite",
+    description="Our bot's invite links!",
+    guild_ids=get_testing_guilds(),
+)
+slash.add_slash_command(
+    meta.vote,
+    name="vote",
+    description="Vote for our bot here!",
+    guild_ids=get_testing_guilds(),
+)
 
 # Commented out because should be a mod-only command
 # @slash.slash(
