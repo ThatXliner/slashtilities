@@ -8,6 +8,7 @@ async def invite(ctx):
         embed=discord.Embed(
             title="Invite links",
             description="Here are some invite links you can use to invite the bot",
+            color=discord.Color.green(),
         )
         .add_field(
             name="Top.gg", value="[**Link**](https://top.gg/bot/828341132865437737)"
@@ -20,7 +21,7 @@ async def invite(ctx):
             name="Direct invite link",
             value="[**Link**](http://thatxliner.github.io/discord/bots/slashtilities.html)",
         )
-        .set_footer(text="You are an epic person :sunglasses:")
+        .set_footer(text="You are an epic person :)")
     )
     log.info("Done!")
     log.info("END OF `invite`")
@@ -32,6 +33,7 @@ async def vote(ctx):
         embed=discord.Embed(
             title="Vote links",
             description="Want to help support us and show your thankfulness? Just vote for our bot!",
+            color=discord.Color.green(),
         )
         .add_field(
             name="Top.gg",
@@ -45,7 +47,7 @@ async def vote(ctx):
             name="GitHub",
             value="[**Star Here!**](https://github.com/ThatXliner/slashtilities)",
         )
-        .set_footer(text="You are an epic person :sunglasses:")
+        .set_footer(text="You are an epic person :)")
     )
     log.info("Done!")
     log.info("END OF `vote`")
