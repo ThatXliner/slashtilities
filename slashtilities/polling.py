@@ -71,8 +71,8 @@ async def yesno(ctx: commands.Context, question: str) -> None:
     log.info("Sending response")
     msg = await ctx.send(
         embed=discord.Embed(
-            title="",
-            description=await utils.quote(question),
+            title=await utils.quote(question),
+            description="React with :+1: to agree and with :-1: to disagree.",
             color=discord.Color.blue(),
         )
         .set_author(name=f"{ctx.author} asks:", icon_url=str(ctx.author.avatar_url))
