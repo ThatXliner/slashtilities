@@ -21,7 +21,7 @@ async def poll(ctx: commands.Context, question: str, *choices: str) -> None:
     log.info("Poll made; sending response...")
     msg = await ctx.send(
         embed=discord.Embed(
-            title=f'"{question}"',
+            title=await utils.quote(question),
             description=await make_numbered_list(choices),
             color=discord.Color.blue(),
         )
