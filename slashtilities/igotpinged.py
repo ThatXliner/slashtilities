@@ -111,7 +111,6 @@ async def igotpinged(ctx: commands.Context) -> None:
                             "Gimmei `Manage Messages` permission."
                         ).set_footer(
                             text="If you need to re-invite the bot, use the `/invite` command"
-                        )
                     )
                 log.info("Success!")
             else:

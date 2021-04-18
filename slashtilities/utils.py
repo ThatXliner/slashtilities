@@ -1,8 +1,10 @@
 import datetime
-from typing import Optional
+import platform
+import random
+import sys
+from typing import Optional, Tuple
 
 import discord
-from discord.ext import commands
 from slashtilities import log
 
 
@@ -25,6 +27,39 @@ async def errorize(error_msg: str) -> discord.Embed:
         description=error_msg,
         color=discord.Color.red(),
     )
+
+
+async def joke_info() -> str:
+    jokes: Tuple[str, ...] = (
+        "Uses Heroku: True",
+        "Is a cool bot: True",
+        "Hosted on GitHub: True",
+        "Implemented via Python: True",
+        "Implemented via NodeJS: False",
+        "Hosted on BitBucket: False",
+        "Hosted on GitLab: False",
+        "Breaks easily: False",
+    )
+    return random.choice(jokes)
+
+
+async def get_os() -> str:
+    # TODO: Cygwin too
+    if sys.platform.startswith("win"):
+        version = platform.win32_ver()[0]
+    elif sys.platform.startswith("darwin"):
+        version = platform.mac_ver()[0]
+    else:  # TODO: Linux
+        version = "Unknown"
+    return f"{platform.system()}, {version}"
+
+
+async def get_python_version() -> str:
+    return f"{platform.python_version()}, on {platform.system()}"
+
+
+async def get_timestamp() -> str:  # TODO: Heroku-style timestamps
+    return await basically_today("{}")
 
 
 async def disable(ctx, why: str = "The devs have not given why") -> None:
