@@ -100,9 +100,19 @@ async def igotpinged(ctx: commands.Context) -> None:
                 log.info("Creating paginator")
                 paginator = BotEmbedPaginator(ctx, to_paginate)
                 log.info("Running paginator")
-                await paginator.run(
-                    channel=ctx  # Very hacky. It'll think ctx.send == channel.send
-                )  # But it works
+                try:
+                    await paginator.run(
+                        channel=ctx  # Very hacky. It'll think ctx.send == channel.send
+                    )  # But it works
+                except discord.errors.Forbidden:
+                    ctx.channel.send(
+                        embed=utils.errorize(
+                            "Oi, I cannot remove your reactions.\n"
+                            "Gimmei `Manage Messages` permission."
+                        ).set_footer(
+                            text="If you need to re-invite the bot, use the `/invite` command"
+                        )
+                    )
                 log.info("Success!")
             else:
                 log.info("Found ping")
