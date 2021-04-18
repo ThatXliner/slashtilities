@@ -105,10 +105,12 @@ async def igotpinged(ctx: commands.Context) -> None:
                         channel=ctx  # Very hacky. It'll think ctx.send == channel.send
                     )  # But it works
                 except discord.errors.Forbidden:
-                    await ctx.channel.send(
-                        embed=await utils.errorize(
-                            "I cannot remove your reactions. Make sure I have the `Manage Messages` permission"
-                        )
+                    ctx.channel.send(
+                        embed=utils.errorize(
+                            "Oi, I cannot remove your reactions.\n"
+                            "Gimmei `Manage Messages` permission."
+                        ).set_footer(
+                            text="If you need to re-invite the bot, use the `/invite` command"
                     )
                 log.info("Success!")
             else:
