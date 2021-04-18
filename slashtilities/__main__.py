@@ -1,13 +1,17 @@
 # TODO: Use embeds
 import asyncio
 import os
+import sys
+import traceback
 
 import discord
 from discord import Color, Embed
+from discord.ext.commands import Bot, Cog
 from discord_slash import SlashCommand  # Importing the newly installed library.
+from discord_slash.context import SlashContext
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option, remove_all_commands
-from slashtilities import cc, igotpinged, meta, polling
+from slashtilities import cc, igotpinged, log, meta, polling, utils
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = discord.Intents().default()
@@ -18,11 +22,42 @@ client = discord.Client(
     ),
 )
 slash = SlashCommand(client, sync_commands=True)
+bot = Bot("/")
 
 
 @client.event
 async def on_ready():
     print("\N{WHITE HEAVY CHECK MARK} I am ready!")
+
+
+@client.event
+async def on_slash_command_error(ctx, exception):
+    log.critical(str(exception))
+    ctx.send(
+        embed=discord.Embed(
+            title=":boom: CRITICAL!!!",
+            description="😱 AHHHHHHH!!! AN ***UNCAUGHT EXCEPTION!!!***",
+            color=discord.Color.red(),
+        )
+        .add_field(
+            name=":bug: You should tell us about this",
+            value="Go to the "
+            "[issue tracker](https://github.com/ThatXliner/slashtilities/issues) to do that.\n"
+            "Make sure to screenshot/link/keep this message because "
+            "the information below is very valuable for debugging.",
+        )
+        .add_field(name="Exception", value=repr(exception))
+        .add_field(name="Traceback", value="```py\n" + traceback.format_exc() + "\n```")
+        .add_field(
+            name="Miscellenous Information",
+            value=f"The bug-finder: {ctx.author.mention}\n"
+            f"Python version: {await utils.get_python_version()}\n"
+            f"Operating System: {await utils.get_os()}\n"
+            f"Timestamp: {await utils.get_timestamp()}\n" + await utils.joke_info(),
+        )
+        .set_footer(text="😓 sorry."),
+        allowed_mentions=discord.AllowedMentions().none(),
+    )
 
 
 def get_testing_guilds():
