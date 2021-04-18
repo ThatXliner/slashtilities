@@ -33,8 +33,8 @@ async def on_ready():
 @client.event
 async def on_slash_command_error(ctx, exception):
     log.critical(str(exception))
-    ctx.send(
-        embed=discord.Embed(
+    to_send = (
+        discord.Embed(
             title=":boom: CRITICAL!!!",
             description="😱 AHHHHHHH!!! AN ***UNCAUGHT EXCEPTION!!!***",
             color=discord.Color.red(),
@@ -46,8 +46,14 @@ async def on_slash_command_error(ctx, exception):
             "Make sure to screenshot/link/keep this message because "
             "the information below is very valuable for debugging.",
         )
-        .add_field(name="Exception", value=repr(exception))
-        .add_field(name="Traceback", value="```py\n" + traceback.format_exc() + "\n```")
+        .add_field(
+            name="Exception", value="```py\n" + repr(exception) + "\n```", inline=False
+        )
+        .add_field(
+            name="Traceback",
+            value="```py\n" + traceback.format_exc() + "\n```",
+            inline=False,
+        )
         .add_field(
             name="Miscellenous Information",
             value=f"The bug-finder: {ctx.author.mention}\n"
@@ -55,9 +61,18 @@ async def on_slash_command_error(ctx, exception):
             f"Operating System: {await utils.get_os()}\n"
             f"Timestamp: {await utils.get_timestamp()}\n" + await utils.joke_info(),
         )
-        .set_footer(text="😓 sorry."),
-        allowed_mentions=discord.AllowedMentions().none(),
+        .set_footer(text="😓 sorry.")
     )
+    try:
+        await ctx.channel.send(
+            embed=to_send,
+            allowed_mentions=discord.AllowedMentions().none(),
+        )
+    except discord.errors.Forbidden:
+        await ctx.send(
+            embed=to_send,
+            allowed_mentions=discord.AllowedMentions().none(),
+        )
 
 
 def get_testing_guilds():
