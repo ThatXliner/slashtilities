@@ -57,9 +57,12 @@ async def on_slash_command_error(ctx, exception):
         .add_field(
             name="Miscellenous Information",
             value=f"The bug-finder: {ctx.author.mention}\n"
-            f"Python version: {await utils.get_python_version()}\n"
-            f"Operating System: {await utils.get_os()}\n"
-            f"Timestamp: {await utils.get_timestamp()}\n" + await utils.joke_info(),
+            f"Python version: " + await utils.get_python_version() + "\n"
+            f"Operating System: " + await utils.get_os() + "\n"
+            f"Timestamp: "
+            + await utils.get_timestamp()
+            + "\n"
+            + await utils.joke_info(),
         )
         .set_footer(text="😓 sorry.")
     )
