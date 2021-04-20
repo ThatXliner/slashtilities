@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import platform
 import random
@@ -12,12 +13,17 @@ async def get_last_message_from(
     author: discord.Member, channel: discord.TextChannel
 ) -> Optional[str]:
     log.info("Getting last message")
-    async for message in channel.history(oldest_first=False, limit=None):
-        if message.author == author:
-            log.info("Success")
-            return message
-    log.info("Not found")
-    return None
+    try:
+        output = await asyncio.wait_for(await channel.history().get(author__id=author.id), timeout=10.0)  # Timeout after 10 seconds
+    except asyncio.TimeoutError:
+        log.info("Timed out")
+        raise
+    else:
+        if output is None:
+            log.info("Not found")
+        else:
+            log.info("Found")
+        return output
 
 
 async def errorize(error_msg: str) -> discord.Embed:
