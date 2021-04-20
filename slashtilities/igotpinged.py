@@ -26,7 +26,7 @@ async def igotpinged(ctx: commands.Context) -> None:
     try:
         last_msg = await utils.get_last_message_from(ctx.author, channel=ctx.channel)
     except discord.errors.Forbidden:
-        log.info("Sending response")
+        log.info("Sending response (errored)")
         await ctx.send(
             embed=(
                 await utils.errorize(
@@ -34,6 +34,17 @@ async def igotpinged(ctx: commands.Context) -> None:
                     "I don't even have access to this channel???",
                 )
             ).set_footer(text="What an idiot")
+        )
+        log.info("Success!")
+        return
+    except asyncio.TimeoutError:
+        log.info("Sending response (timed out)")
+        await ctx.send(
+            embed=(
+                await utils.errorize(
+                    "Ayo, getting your last message took too long (more than *10 seconds*). So I got impatient and quit."
+                )
+            ).set_footer(text="Maybe you didn't send any messages")
         )
         log.info("Success!")
     else:
