@@ -40,7 +40,7 @@ async def igotpinged(ctx: commands.Context) -> None:
     except asyncio.TimeoutError:
         log.info("Sending response (timed out)")
         await ctx.send(
-            embed=(
+            embed=(  # TODO: Don't get impatient and quit
                 await utils.errorize(
                     "Ayo, getting your last message took too long (more than *10 seconds*). So I got impatient and quit."
                 )
@@ -58,7 +58,7 @@ async def igotpinged(ctx: commands.Context) -> None:
             log.info("Success!")
             log.info("END OF `igotpinged`")
             return
-        ping_msgs = [
+        ping_msgs = [  # TODO: Seperate to function and add timeout
             message
             async for message in ctx.channel.history(
                 after=last_msg,
