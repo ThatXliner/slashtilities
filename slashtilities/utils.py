@@ -82,5 +82,5 @@ async def quote(msg: str) -> str:
 async def basically_today(msg_format: str) -> str:
     log.info(f"Sending today's time to format {msg_format!r}")
     return msg_format.format(
-        datetime.datetime.today().strftime("%B, %d, %Y (%m/%d/%Y) %I:%M")
+        datetime.datetime.today().strftime("%B, %d, %Y (%m/%d/%Y)")
     )
