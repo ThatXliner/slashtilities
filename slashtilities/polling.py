@@ -14,11 +14,15 @@ async def make_numbered_list(stuff: Iterable[str]) -> str:
     return output
 
 
-async def poll(ctx: commands.Context, question: str, *choices: str) -> None:
+async def poll(
+    ctx: commands.Context, question: str, *choices: str, **choices_dict: Dict[str, str]
+) -> None:
     log.info("START OF `poll`")
     log.info("Making poll")
     log.debug({question: choices})
     log.info("Poll made; sending response...")
+    choices = list(choices)
+    choices.extend(choices_dict.keys())
     msg = await ctx.send(
         embed=discord.Embed(
             title=await utils.quote(question),
