@@ -32,7 +32,13 @@ async def on_ready():
 
 @client.event
 async def on_slash_command_error(ctx, exception):
-    log.critical(str(exception))
+    log.critical(
+        "\n".join(
+            traceback.format_exception(
+                type(exception), exception, exception.__traceback__
+            )
+        )
+    )
     to_send = (
         discord.Embed(
             title=":boom: CRITICAL!!!",
@@ -51,15 +57,26 @@ async def on_slash_command_error(ctx, exception):
         )
         .add_field(
             name="Traceback",
-            value="```py\n" + traceback.format_exc() + "\n```",
+            value="```py\n"
+            + "\n".join(
+                traceback.format_exception(
+                    type(exception), exception, exception.__traceback__
+                )
+            )
+            + "\n```",
             inline=False,
         )
         .add_field(
             name="Miscellenous Information",
             value=f"The bug-finder: {ctx.author.mention}\n"
-            f"Python version: " + await utils.get_python_version() + "\n"
-            f"Operating System: " + await utils.get_os() + "\n"
-            f"Timestamp: "
+            + "Python version: "
+            + await utils.get_python_version()
+            + "\n"
+            + "Operating System: "
+            + await utils.get_os()
+            + "\n"
+            + f"Command:{ctx.command}"
+            "Timestamp: "
             + await utils.get_timestamp()
             + "\n"
             + await utils.joke_info(),

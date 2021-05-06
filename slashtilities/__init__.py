@@ -8,7 +8,7 @@ logging.basicConfig(
     level=logging.INFO,
     format=FORMAT,
     datefmt="[%X]",
-    handlers=[RichHandler(rich_tracebacks=True)],
+    # handlers=[RichHandler(rich_tracebacks=True)],
 )
 
 log = logging.getLogger(__name__)
