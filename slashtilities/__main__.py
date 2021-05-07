@@ -75,7 +75,7 @@ async def on_slash_command_error(ctx, exception):
             + "Operating System: "
             + await utils.get_os()
             + "\n"
-            + f"Command:{ctx.command}"
+            + f"Command:{ctx.command}\n"
             "Timestamp: "
             + await utils.get_timestamp()
             + "\n"
