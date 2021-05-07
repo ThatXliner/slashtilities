@@ -84,3 +84,6 @@ async def basically_today(msg_format: str) -> str:
     return msg_format.format(
         datetime.datetime.today().strftime("%B, %d, %Y (%m/%d/%Y)")
     )
+
+
+NO_MENTIONS = discord.AllowedMentions.none()

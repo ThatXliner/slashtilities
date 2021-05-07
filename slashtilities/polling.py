@@ -22,18 +22,40 @@ async def poll(
     log.debug({question: choices})
     log.info("Poll made; sending response...")
     choices = list(choices)
-    choices.extend(choices_dict.keys())
-    msg = await ctx.send(
-        embed=discord.Embed(
-            title=await utils.quote(question),
-            description=await make_numbered_list(choices),
-            color=discord.Color.blue(),
+    choices.extend(choices_dict.values())
+    try:
+        msg = await ctx.send(
+            embed=discord.Embed(
+                title=await utils.quote(question),
+                description=await make_numbered_list(choices),
+                color=discord.Color.blue(),
+            )
+            .set_author(name=f"{ctx.author} asks:", icon_url=str(ctx.author.avatar_url))
+            .set_footer(text=await utils.basically_today("Poll made at {}")),
+            allowed_mentions=discord.AllowedMentions().none(),
         )
-        .set_author(name=f"{ctx.author} asks:", icon_url=str(ctx.author.avatar_url))
-        .set_footer(text=await utils.basically_today("Poll made at {}")),
-        allowed_mentions=discord.AllowedMentions().none(),
-    )
-    log.info("Success!")
+    except discord.errors.HTTPException:
+        log.info("Spam?")
+        await ctx.send(
+            f"**{ctx.author.mention} asks:**\n" + (await utils.quote(question)),
+            allowed_mentions=utils.NO_MENTIONS,
+        )
+        try:
+            msg = await ctx.channel.send(
+                embed=discord.Embed(
+                    title="Choices:",
+                    description=await make_numbered_list(choices),
+                    color=discord.Color.blue(),
+                ).set_footer(text=await utils.basically_today("Poll made at {}"))
+            )
+        except discord.errors.HTTPException:
+            log.info("yes, it's spam")
+            msg = await ctx.channel.send(
+                "**Choices:**\n" + (await make_numbered_list(choices)),
+                allowed_mentions=discord.AllowedMentions.none(),
+            )
+    else:
+        log.info("Success!")
     try:
         log.info("Trying to add reactions...")
         for emoji in map(get_emoji_for, range(1, len(choices) + 1)):
@@ -73,16 +95,24 @@ def get_emoji_for(thing: int) -> str:
 async def yesno(ctx: commands.Context, question: str) -> None:
     log.info("START OF `yesno`")
     log.info("Sending response")
-    msg = await ctx.send(
-        embed=discord.Embed(
-            title=await utils.quote(question),
-            description="React with :+1: to agree and with :-1: to disagree.",
-            color=discord.Color.blue(),
+    try:
+        msg = await ctx.send(
+            embed=discord.Embed(
+                title=await utils.quote(question),
+                description="React with :+1: to agree and with :-1: to disagree.",
+                color=discord.Color.blue(),
+            )
+            .set_author(name=f"{ctx.author} asks:", icon_url=str(ctx.author.avatar_url))
+            .set_footer(text=await utils.basically_today("Poll made at {}")),
         )
-        .set_author(name=f"{ctx.author} asks:", icon_url=str(ctx.author.avatar_url))
-        .set_footer(text=await utils.basically_today("Poll made at {}")),
-    )
-    log.info("Success!")
+    except discord.errors.HTTPException:
+        log.info("Spam?")
+        msg = await ctx.send(
+            f"**{ctx.author.mention} asks:**\n" + (await utils.quote(question)),
+            allowed_mentions=utils.NO_MENTIONS,
+        )
+    else:
+        log.info("Success!")
     try:
         log.info("Trying to add reactions...")
         await msg.add_reaction("\N{THUMBS UP SIGN}")
