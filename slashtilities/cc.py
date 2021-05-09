@@ -5,14 +5,14 @@ from discord_slash.utils.manage_commands import create_option
 from slashtilities import utils
 
 
-async def cc(ctx: commands.Context, *users) -> None:
+async def cc(ctx: commands.Context, **users) -> None:
     await utils.disable(
         ctx,
         "Top.gg requires that **any bot command that dms arbitrary members to have an opt-out option**. "
         "I have currently not implemented an opt-out option because it requires a database and "
         "I haven't figured out databases (screw you, [SQL](https://en.wikipedia.org/wiki/SQL) and [Heroku](https://heroku.com))",
     )
-    # await cc_helper(ctx, create_cc_message, "CC", users)
+    # await cc_helper(ctx, create_cc_message, "CC", users.items())
 
 
 async def cc_helper(ctx: commands.Context, msg_func, atype, users):
@@ -21,7 +21,9 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
     if filtered:
         last_msg = await utils.get_last_message_from(ctx.author, channel=ctx.channel)
         if last_msg is None:
-            ctx.send(embed=await utils.errorize(f"Bruh, you have no messages to {atype}"))
+            ctx.send(
+                embed=await utils.errorize(f"Bruh, you have no messages to {atype}")
+            )
         assert last_msg is None
         for user in filtered:
             await (user.dm_channel or await user.create_dm()).send(
@@ -62,14 +64,14 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
             await ctx.channel.send(f":mirror: Also, you can't {atype} yourself.")
 
 
-async def bcc(ctx: commands.Context, *users) -> None:
+async def bcc(ctx: commands.Context, **users) -> None:
     await utils.disable(
         ctx,
         "Top.gg requires that **any bot command that dms arbitrary members to have an opt-out option**. "
         "I have currently not implemented an opt-out option because it requires a database and "
         "I haven't figured out databases (screw you, [SQL](https://en.wikipedia.org/wiki/SQL) and [Heroku](https://heroku.com))",
     )
-    # await cc_helper(ctx, create_bcc_message, "BCC", users)
+    # await cc_helper(ctx, create_bcc_message, "BCC", users.items())
 
 
 async def create_bcc_message(ctx: commands.Context, _, from_message, to):
