@@ -16,5 +16,5 @@ jobs:
         python-version: 3.9
     - name: Install dependencies
       run: python -m pip install poetry
-    - name: Validate requirements.txt
-      run: poetry export --without-hashes | diff requirements.txt -
+    - name: Run tests
+      run: poetry run pytest -vvv

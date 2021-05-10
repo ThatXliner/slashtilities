@@ -15,7 +15,6 @@
  - Zero configuration needed
 
 ### Available commands
-
 #### `/ping`
 
 > Returns the bot's [ping](https://www.rtr.at/TKP/service/rtr-nettest/help/test_result/netztestfaq_testergebnis_0300.en.html) in miliseconds
@@ -82,8 +81,7 @@ Please.
 
 > ???
 
-Suggest your command in our [issue tracker][issue]! Maybe the newest command came from your idea!
-
+Suggest your command in our [issue tracker][https://github.com/ThatXliner/slashtilities/issues/]! Maybe the newest command came from your idea!
 ## Instructions
 
 ### Adding to your server
@@ -109,5 +107,3 @@ Finally, start running the bot. Remember to replace `<your token here>` with you
 ```bash
 $ DISCORD_TOKEN="<your token here>" poetry run python -m slashtilities
 ```
-
-[issue]: https://github.com/ThatXliner/slashtilities/issues/
