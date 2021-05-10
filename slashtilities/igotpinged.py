@@ -52,9 +52,9 @@ async def igotpinged(ctx: commands.Context) -> None:
         if last_msg is None:
             log.info("Sending response")
             await ctx.send(
-                await utils.errorize(
+                embed=(await utils.errorize(
                     "Couldn't find your last message (maybe you didn't send any messages)"
-                )
+                ))
             )
             log.info("Success!")
             log.info("END OF `igotpinged`")
