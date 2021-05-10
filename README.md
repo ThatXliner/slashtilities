@@ -33,6 +33,8 @@ When you're in servers where people talk 100 messages a minute, this command is 
 
 While Discord's find feature is nice, typing `/igotpinged` saves a lot of keystrokes or (in the case of mobile) tapping.
 
+![demo](./demo.gif)
+
 #### ~~`/cc @someone, ...`~~ (currently disabled)
 
 > Sends a dm to the people you `/cc`'d with your last message's contents and jump-link. Also tells them who else you CC'd
