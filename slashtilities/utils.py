@@ -14,7 +14,7 @@ async def get_last_message_from(
 ) -> Optional[str]:
     log.info("Getting last message")
     try:
-        output = await asyncio.wait_for(await channel.history().get(author__id=author.id), timeout=10.0)  # Timeout after 10 seconds
+        output = await asyncio.wait_for(channel.history().get(author__id=author.id), timeout=10.0)  # Timeout after 10 seconds
     except asyncio.TimeoutError:
         log.info("Timed out")
         raise
