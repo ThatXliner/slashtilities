@@ -58,7 +58,9 @@ Basically [`/cc`](#cc-someone-) but the dm message doesn't tell them who else yo
 
 This is useful if you want a group vote. This command will also add the nessecary reactions.
 
-**NOTE:** The current limit of choices is 10
+**NOTE:** The current limit of choices is 9
+
+![demo](./multichoicepoll.png)
 
 #### `/yesno question`
 
