@@ -4,6 +4,7 @@ from typing import DefaultDict, List
 import discord
 from discord.ext import commands
 from disputils import BotEmbedPaginator
+
 from slashtilities import log, utils
 
 
@@ -19,7 +20,7 @@ async def make_list(stuff: List[str]) -> str:
     return output
 
 
-async def igotpinged(ctx: commands.Context) -> None:
+async def igotpinged(self, ctx: commands.Context) -> None:
     log.info("START OF `igotpinged`")
     await ctx.defer()
     log.info("Deffered.")

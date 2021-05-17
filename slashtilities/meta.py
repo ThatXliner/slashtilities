@@ -1,8 +1,9 @@
 import discord
+
 from slashtilities import log
 
 
-async def invite(ctx):
+async def invite(self, ctx):
     log.info("Sending invite links...")
     await ctx.send(
         embed=discord.Embed(
@@ -27,7 +28,7 @@ async def invite(ctx):
     log.info("END OF `invite`")
 
 
-async def vote(ctx):
+async def vote(self, ctx):
     log.info("Sending vote links...")
     await ctx.send(
         embed=discord.Embed(
