@@ -22,6 +22,7 @@ async def poll(
     *choices: str,
     **choices_dict: Dict[str, str],
 ) -> None:
+    """Send a multi-choice poll (not mutually exclusive)"""
     log.info("START OF `poll`")
     log.info("Making poll")
     log.debug({question: choices})
@@ -98,6 +99,7 @@ def get_emoji_for(thing: int) -> str:
 
 
 async def yesno(self, ctx: commands.Context, question: str) -> None:
+    """Send a yes-or-no question (not mutually exclusive)"""
     log.info("START OF `yesno`")
     log.info("Sending response")
     try:
