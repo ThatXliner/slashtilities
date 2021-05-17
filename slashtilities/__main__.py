@@ -6,7 +6,7 @@ import traceback
 
 import discord
 from discord import Activity, ActivityType, Color, Embed, Intents
-from discord.ext.commands import Bot, Cog
+from discord.ext.commands import Bot, when_mentioned_or
 
 # Importing the newly installed library.
 from discord_slash import SlashCommand, cog_ext
@@ -20,7 +20,7 @@ TOKEN = os.environ["DISCORD_TOKEN"]
 intents = Intents().default()
 
 bot = Bot(
-    "/",
+    when_mentioned_or("/"),
     intents=intents,
     activity=Activity(type=ActivityType.watching, name="your every step >:)"),
 )
