@@ -21,7 +21,13 @@ class CogMeta(type):
             if not func_name[0] == "_":
                 base_func = getattr(module, func_name)
                 assert base_func.__name__ == func_name
-                if isinstance(options, str):
+                if isinstance(options, str) and (
+                    not None
+                    in {
+                        base_func.__doc__,
+                        options,
+                    }
+                ):
                     options = {"description": options}
                 new_attrs[f"slash_{func_name}"] = cog_ext.cog_slash(
                     **{"name": func_name, "description": base_func.__doc__, **options}
@@ -70,7 +76,6 @@ class Meta(metaclass=CogMeta):
 
 class Polling(metaclass=CogMeta):
     yesno = {
-        "description": "Send a yes-or-no question (not mutually exclusive)",
         "options": [
             create_option(
                 "question",
@@ -81,18 +86,15 @@ class Polling(metaclass=CogMeta):
         ],
     }
     poll = {
-        "description": "Send a multi-choice poll (not mutually exclusive)",
         "options": polling.create_poll_options(10),
     }
 
 
 class CCing(metaclass=CogMeta):
     cc = {
-        "description": "CC other people your last message",
         "options": ccing.create_person_options(10),
     }
     bcc = {
-        "description": "BCC other people your last message",
         "options": ccing.create_person_options(10),
     }
 
