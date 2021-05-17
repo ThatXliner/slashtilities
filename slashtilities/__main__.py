@@ -1,7 +1,5 @@
 # TODO: Use embeds
-import asyncio
 import os
-import sys
 import traceback
 
 import discord
@@ -9,10 +7,7 @@ from discord import Activity, ActivityType, Color, Embed, Intents
 from discord.ext.commands import Bot, when_mentioned_or
 
 # Importing the newly installed library.
-from discord_slash import SlashCommand, cog_ext
-from discord_slash.context import SlashContext
-from discord_slash.model import SlashCommandOptionType
-from discord_slash.utils.manage_commands import create_option, remove_all_commands
+from discord_slash import SlashCommand
 
 from slashtilities import cogs, igotpinged, log, utils
 
