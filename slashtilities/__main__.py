@@ -18,7 +18,7 @@ intents = discord.Intents().default()
 client = discord.Client(
     intents=intents,
     activity=discord.Activity(
-        type=discord.ActivityType.watching, name="Discord's ugly re-design"
+        type=discord.ActivityType.watching, name="@ThatXliner#1995 code me"
     ),
 )
 slash = SlashCommand(client, sync_commands=True)
