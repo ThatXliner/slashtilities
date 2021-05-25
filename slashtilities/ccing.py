@@ -2,10 +2,12 @@ import discord
 from discord.ext import commands
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option
+
 from slashtilities import utils
 
 
-async def cc(ctx: commands.Context, **users) -> None:
+async def cc(self, ctx: commands.Context, **users) -> None:
+    """CC other people your last message"""
     await utils.disable(
         ctx,
         "Top.gg requires that **any bot command that dms arbitrary members to have an opt-out option**. "
@@ -64,7 +66,8 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
             await ctx.channel.send(f":mirror: Also, you can't {atype} yourself.")
 
 
-async def bcc(ctx: commands.Context, **users) -> None:
+async def bcc(self, ctx: commands.Context, **users) -> None:
+    """BCC other people your last message"""
     await utils.disable(
         ctx,
         "Top.gg requires that **any bot command that dms arbitrary members to have an opt-out option**. "

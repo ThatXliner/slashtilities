@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option
+
 from slashtilities import log, utils
 
 
@@ -15,8 +16,13 @@ async def make_numbered_list(stuff: Iterable[str]) -> str:
 
 
 async def poll(
-    ctx: commands.Context, question: str, *choices: str, **choices_dict: Dict[str, str]
+    self,
+    ctx: commands.Context,
+    question: str,
+    *choices: str,
+    **choices_dict: Dict[str, str],
 ) -> None:
+    """Send a multi-choice poll (not mutually exclusive)"""
     log.info("START OF `poll`")
     log.info("Making poll")
     log.debug({question: choices})
@@ -92,7 +98,8 @@ def get_emoji_for(thing: int) -> str:
     return emoji_dict[thing]
 
 
-async def yesno(ctx: commands.Context, question: str) -> None:
+async def yesno(self, ctx: commands.Context, question: str) -> None:
+    """Send a yes-or-no question (not mutually exclusive)"""
     log.info("START OF `yesno`")
     log.info("Sending response")
     try:

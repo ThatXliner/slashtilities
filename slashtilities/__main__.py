@@ -1,36 +1,35 @@
 # TODO: Use embeds
-import asyncio
 import os
-import sys
 import traceback
 
 import discord
-from discord import Color, Embed
-from discord.ext.commands import Bot, Cog
-from discord_slash import SlashCommand  # Importing the newly installed library.
-from discord_slash.context import SlashContext
-from discord_slash.model import SlashCommandOptionType
-from discord_slash.utils.manage_commands import create_option, remove_all_commands
-from slashtilities import cc, igotpinged, log, meta, polling, utils
+from discord import Activity, ActivityType, Color, Embed, Intents
+from discord.ext.commands import Bot, when_mentioned_or
+
+# Importing the newly installed library.
+from discord_slash import SlashCommand
+
+from slashtilities import cogs, igotpinged, log, utils
 
 TOKEN = os.environ["DISCORD_TOKEN"]
-intents = discord.Intents().default()
-client = discord.Client(
+intents = Intents().default()
+
+bot = Bot(
+    when_mentioned_or("/"),
     intents=intents,
     activity=discord.Activity(
         type=discord.ActivityType.watching, name="@ThatXliner#1995 code me"
     ),
 )
-slash = SlashCommand(client, sync_commands=True)
-bot = Bot("/")
+slash = SlashCommand(bot, sync_commands=True)
 
 
-@client.event
+@bot.event
 async def on_ready():
     print("\N{WHITE HEAVY CHECK MARK} I am ready!")
 
 
-@client.event
+@bot.event
 async def on_slash_command_error(ctx, exception):
     log.critical(
         "\n".join(
@@ -76,10 +75,7 @@ async def on_slash_command_error(ctx, exception):
             + await utils.get_os()
             + "\n"
             + f"Command: {ctx.command}\n"
-            "Timestamp: "
-            + await utils.get_timestamp()
-            + "\n"
-            + await utils.joke_info(),
+            "Timestamp: " + await utils.get_timestamp(),
         )
         .set_footer(text="😓 sorry.")
     )
@@ -95,13 +91,6 @@ async def on_slash_command_error(ctx, exception):
         )
 
 
-def get_testing_guilds():
-    if os.environ.get("DISCORD_TEST_GUILDS") is not None:
-        return os.environ["DISCORD_TEST_GUILDS"].split(",") or None
-    else:
-        return None
-
-
 # if os.environ.get("DISCORD_TESTING") == "1":
 #     return os.environ["DISCORD_TEST_GUILDS"].split(",") or None
 # else:
@@ -111,10 +100,9 @@ def get_testing_guilds():
 @slash.slash(
     name="ping",
     description="Return the latency of the bot",
-    guild_ids=get_testing_guilds(),
 )
 async def ping(ctx):
-    gotten_ping = client.latency * 1000
+    gotten_ping = bot.latency * 1000
     print(f"Recorded ping: {gotten_ping} ms")
     await ctx.send(
         embed=Embed(
@@ -129,56 +117,10 @@ slash.add_slash_command(
     igotpinged.igotpinged,
     name="igotpinged",  # TODO: Add "whopingedme" alias
     description="Get the person who pinged you ever since your last message",
-    guild_ids=get_testing_guilds(),
 )
-slash.add_slash_command(
-    cc.cc,
-    name="cc",
-    description="CC other people your last message",
-    guild_ids=get_testing_guilds(),
-    options=cc.create_person_options(10),
-)
-slash.add_slash_command(
-    cc.bcc,
-    name="bcc",
-    description="BCC other people your last message",
-    guild_ids=get_testing_guilds(),
-    options=cc.create_person_options(10),
-)
-slash.add_slash_command(
-    polling.poll,
-    name="poll",
-    description="Send a multi-choice poll (not mutually exclusive)",
-    guild_ids=get_testing_guilds(),
-    options=polling.create_poll_options(10),
-)
-slash.add_slash_command(
-    polling.yesno,
-    name="yesno",
-    description="Send a yes-or-no question (not mutually exclusive)",
-    guild_ids=get_testing_guilds(),
-    options=[
-        create_option(
-            "question",
-            "The question you're going to ask",
-            option_type=SlashCommandOptionType.STRING,
-            required=True,
-        ),
-    ],
-)
-slash.add_slash_command(
-    meta.invite,
-    name="invite",
-    description="Our bot's invite links!",
-    guild_ids=get_testing_guilds(),
-)
-slash.add_slash_command(
-    meta.vote,
-    name="vote",
-    description="Vote for our bot here!",
-    guild_ids=get_testing_guilds(),
-)
-
+bot.add_cog(cogs.Meta(bot))
+bot.add_cog(cogs.Polling(bot))
+bot.add_cog(cogs.CCing(bot))
 # Commented out because should be a mod-only command
 # @slash.slash(
 #     name="purge",
@@ -199,4 +141,4 @@ slash.add_slash_command(
 
 
 if __name__ == "__main__":
-    client.run(TOKEN)
+    bot.run(TOKEN)
