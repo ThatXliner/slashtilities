@@ -22,8 +22,8 @@ class CogMeta(type):
                 base_func = getattr(module, func_name)
                 assert base_func.__name__ == func_name
                 if isinstance(options, str) and (
-                    not None
-                    in {
+                    None
+                    not in {
                         base_func.__doc__,
                         options,
                     }

@@ -3,7 +3,7 @@ import os
 import traceback
 
 import discord
-from discord import Activity, ActivityType, Color, Embed, Intents
+from discord import Color, Embed, Intents
 from discord.ext.commands import Bot, when_mentioned_or
 
 # Importing the newly installed library.
