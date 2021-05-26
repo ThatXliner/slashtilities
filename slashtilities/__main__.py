@@ -84,9 +84,23 @@ async def on_slash_command_error(ctx, exception):
             embed=to_send,
             allowed_mentions=discord.AllowedMentions().none(),
         )
-    except discord.errors.Forbidden:
+    except:
         await ctx.send(
-            embed=to_send,
+            (
+                "😱 AHHHHHHH!!! AN ***UNCAUGHT EXCEPTION!!!***\n"
+                ":bug: You should tell us about this\n"
+                "Go to the [issue tracker](https://github.com/ThatXliner/slashtilities/issues) to do that.\n"
+                "Make sure to screenshot/link/keep this message because "
+                "the information below is very valuable for debugging.\n\n"
+                "Traceback:\n"
+                "```py\n"
+                + "\n".join(
+                    traceback.format_exception(
+                        type(exception), exception, exception.__traceback__
+                    )
+                )
+                + "\n```"
+            ),
             allowed_mentions=discord.AllowedMentions().none(),
         )
 
