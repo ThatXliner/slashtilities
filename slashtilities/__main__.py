@@ -1,4 +1,3 @@
-# TODO: Use embeds
 import os
 import traceback
 
