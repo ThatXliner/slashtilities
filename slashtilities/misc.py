@@ -1,5 +1,8 @@
 import asyncio
+import shutil
+import tempfile
 from collections import defaultdict
+from pathlib import Path
 from typing import DefaultDict, List
 
 import discord
@@ -7,6 +10,92 @@ from discord.ext import commands
 from disputils import BotEmbedPaginator
 
 from slashtilities import log, utils
+
+
+async def emoji_backup(self, ctx: commands.Context):
+    """Back up the guild's emojis"""
+    print("Backing up...")
+    if ctx.guild is None:
+        ctx.send(embed=await utils.errorize("This is a guild-only command"))
+        return
+    emoji_length = len(ctx.guild.emojis)
+    status = await ctx.send(
+        embed=discord.Embed(
+            title="Backing up emojis",
+            description=f":inbox_tray: Downloading {emoji_length} emojis...",
+            color=discord.Color.blue(),
+        ),
+    )
+    with tempfile.TemporaryDirectory() as tempdir:
+        for emoji in ctx.guild.emojis:
+            print(f"Saving {emoji.name!r}")
+            with Path(tempdir).joinpath(
+                emoji.name + (".gif" if emoji.animated else ".png")
+            ).open("wb") as emoji_file:
+                await emoji.url.save(emoji_file)
+
+        await status.edit(
+            embed=discord.Embed(
+                title="Backing up emojis",
+                description=(
+                    f":white_check_mark: Downloaded {emoji_length} emojis\n"
+                    ":pencil: Zipping emojis..."
+                ),
+                color=discord.Color.blue(),
+            )
+        )
+        print("Making archive...")
+        with tempfile.NamedTemporaryFile() as fp:
+            sendme = discord.File(
+                shutil.make_archive(str(fp.name), "zip", tempdir), filename="emojis.zip"
+            )
+            await status.edit(
+                embed=discord.Embed(
+                    title="Backing up emojis",
+                    description=(
+                        f":white_check_mark: Downloaded {emoji_length} emojis\n"
+                        ":white_check_mark: Zipped emojis\n"
+                        ":outbox_tray: Sending emojis..."
+                    ),
+                    color=discord.Color.blue(),
+                )
+            )
+            print("Sending archive...")
+            try:
+                await ctx.channel.send(file=sendme)
+            except discord.errors.Forbidden:
+                await status.edit(
+                    embed=discord.Embed(
+                        title="Backing up emojis",
+                        description=(
+                            f":white_check_mark: Downloaded {emoji_length} emojis\n"
+                            ":white_check_mark: Zipping emojis\n"
+                            ":x: Cannot send emojis\n"
+                        ),
+                        color=discord.Color.green(),
+                    ).add_field(
+                        name="Error!",
+                        value="I do not have the permissions to send files",
+                        inline=False,
+                    )
+                )
+            else:
+                await status.edit(
+                    embed=discord.Embed(
+                        title="Backing up emojis",
+                        description=(
+                            f":white_check_mark: Downloaded {emoji_length} emojis\n"
+                            ":white_check_mark: Zipping emojis\n"
+                            ":white_check_mark: Sent emojis\n"
+                        ),
+                        color=discord.Color.green(),
+                    ).add_field(
+                        name="All set!",
+                        value="Please download the file below",
+                        inline=False,
+                    )
+                )
+        print("Done! Deleted temporary folders!")
 
 
 async def make_list(stuff: List[str]) -> str:
@@ -22,8 +111,12 @@ async def make_list(stuff: List[str]) -> str:
 
 
 async def igotpinged(self, ctx: commands.Context) -> None:
+    """Get the person who pinged you ever since your last message"""
     log.info("START OF `igotpinged`")
-    await ctx.defer()
+    try:
+        await ctx.defer()
+    except AttributeError:
+        pass
     log.info("Deffered.")
     try:
         last_msg = await utils.get_last_message_from(ctx.author, channel=ctx.channel)
@@ -53,9 +146,11 @@ async def igotpinged(self, ctx: commands.Context) -> None:
         if last_msg is None:
             log.info("Sending response")
             await ctx.send(
-                embed=(await utils.errorize(
-                    "Couldn't find your last message (maybe you didn't send any messages)"
-                ))
+                embed=(
+                    await utils.errorize(
+                        "Couldn't find your last message (maybe you didn't send any messages)"
+                    )
+                )
             )
             log.info("Success!")
             log.info("END OF `igotpinged`")

@@ -3,13 +3,13 @@ import os
 import traceback
 
 import discord
-from discord import Activity, ActivityType, Color, Embed, Intents
+from discord import Intents
 from discord.ext.commands import Bot, when_mentioned_or
 
 # Importing the newly installed library.
 from discord_slash import SlashCommand
 
-from slashtilities import cogs, igotpinged, log, utils
+from slashtilities import cogs, log, utils
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = Intents().default()
@@ -111,30 +111,10 @@ async def on_slash_command_error(ctx, exception):
 #     return None
 
 
-@slash.slash(
-    name="ping",
-    description="Return the latency of the bot",
-)
-async def ping(ctx):
-    gotten_ping = bot.latency * 1000
-    print(f"Recorded ping: {gotten_ping} ms")
-    await ctx.send(
-        embed=Embed(
-            title=":ping_pong: Pong!",
-            description=f"{gotten_ping:.4} ms",
-            color=Color.blue(),
-        )
-    )
-
-
-slash.add_slash_command(
-    igotpinged.igotpinged,
-    name="igotpinged",  # TODO: Add "whopingedme" alias
-    description="Get the person who pinged you ever since your last message",
-)
 bot.add_cog(cogs.Meta(bot))
 bot.add_cog(cogs.Polling(bot))
 bot.add_cog(cogs.CCing(bot))
+bot.add_cog(cogs.Misc(bot))
 # Commented out because should be a mod-only command
 # @slash.slash(
 #     name="purge",
