@@ -1,4 +1,5 @@
-from typing import Dict, Iterable, List
+import asyncio
+from typing import Dict, Iterable, List, Optional
 
 import discord
 from discord.ext import commands
@@ -98,42 +99,83 @@ def get_emoji_for(thing: int) -> str:
     return emoji_dict[thing]
 
 
-async def yesno(self, ctx: commands.Context, question: str) -> None:
+async def yesno(self, ctx: commands.Context, question: Optional[str] = None) -> None:
     """Send a yes-or-no question (not mutually exclusive)"""
     log.info("START OF `yesno`")
     log.info("Sending response")
-    try:
-        msg = await ctx.send(
-            embed=discord.Embed(
-                title=await utils.quote(question),
-                description="React with :+1: to agree and with :-1: to disagree.",
-                color=discord.Color.blue(),
-            )
-            .set_author(name=f"{ctx.author} asks:", icon_url=str(ctx.author.avatar_url))
-            .set_footer(text=await utils.basically_today("Poll made at {}")),
-        )
-    except discord.errors.HTTPException:
-        log.info("Spam?")
-        msg = await ctx.send(
-            f"**{ctx.author.mention} asks:**\n" + (await utils.quote(question)),
-            allowed_mentions=utils.NO_MENTIONS,
-        )
+    if question is None:
+        log.info("No question specified, using last message")
+        # It'll take some time
+        try:
+            await ctx.defer(hidden=True)
+        except AttributeError:
+            pass
+
+        try:
+            skip = True
+            async for message in ctx.channel.history(limit=None):
+                if message.author.id == ctx.author.id:
+                    if skip:
+                        skip = False
+                        continue
+                    question = message
+                    break
+        except asyncio.TimeoutError:
+            MESSAGE = "You didn't specify a question, and I tried to find your last message but it took too long"
+            try:
+                await ctx.send(MESSAGE, hidden=True)
+            except TypeError:
+                await ctx.send(MESSAGE, delete_after=5)
+        else:
+            if question is None:
+                MESSAGE = "Could not find your last message"
+                try:
+                    await ctx.send(MESSAGE, hidden=True)
+                except TypeError:
+                    await ctx.send(MESSAGE, delete_after=5)
+            else:
+                MESSAGE = "Done. Added the proper reactions to it"
+                try:
+                    await ctx.send(MESSAGE, hidden=True)
+                except TypeError:
+                    await ctx.send(MESSAGE, delete_after=5)
+                await question.add_reaction("\N{THUMBS UP SIGN}")
+                await question.add_reaction("\N{THUMBS DOWN SIGN}")
     else:
-        log.info("Success!")
-    try:
-        log.info("Trying to add reactions...")
-        await msg.add_reaction("\N{THUMBS UP SIGN}")
-        await msg.add_reaction("\N{THUMBS DOWN SIGN}")
-    except discord.errors.Forbidden:
-        ctx.channel.send(
-            embed=(
-                await utils.errorize(
-                    "I could not add the nessecary reactions to the poll above"
+        try:
+            msg = await ctx.send(
+                embed=discord.Embed(
+                    title=await utils.quote(question),
+                    description="React with :+1: to agree and with :-1: to disagree.",
+                    color=discord.Color.blue(),
                 )
-            ).set_footer(text="Gimmei perms now")
-        )
-    else:
-        log.info("Added reactions!")
+                .set_author(
+                    name=f"{ctx.author} asks:", icon_url=str(ctx.author.avatar_url)
+                )
+                .set_footer(text=await utils.basically_today("Poll made at {}")),
+            )
+        except discord.errors.HTTPException:
+            log.info("Spam?")
+            msg = await ctx.send(
+                f"**{ctx.author.mention} asks:**\n" + (await utils.quote(question)),
+                allowed_mentions=utils.NO_MENTIONS,
+            )
+        else:
+            log.info("Success!")
+        try:
+            log.info("Trying to add reactions...")
+            await msg.add_reaction("\N{THUMBS UP SIGN}")
+            await msg.add_reaction("\N{THUMBS DOWN SIGN}")
+        except discord.errors.Forbidden:
+            ctx.channel.send(
+                embed=(
+                    await utils.errorize(
+                        "I could not add the nessecary reactions to the poll above"
+                    )
+                ).set_footer(text="Gimmei perms now")
+            )
+        else:
+            log.info("Added reactions!")
     log.info("END OF `yesno`")
 
 
