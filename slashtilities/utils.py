@@ -3,21 +3,34 @@ import datetime
 import platform
 import random
 import sys
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import discord
 
 from slashtilities import log
+from discord_slash.context import SlashContext
+from discord.ext.commands import Context
 
 
 async def get_last_message_from(
-    author: discord.Member, channel: discord.TextChannel
+    context: Union[SlashContext, Context]
+    # author: discord.Member, channel: discord.TextChannel
 ) -> Optional[str]:
     log.info("Getting last message")
     try:
-        output = await asyncio.wait_for(
-            channel.history(limit=None).get(author__id=author.id), timeout=10.0
-        )  # Timeout after 10 seconds
+        output = None
+        if isinstance(context, SlashContext):
+            output = await asyncio.wait_for(
+                context.channel.history(limit=None).get(author__id=context.author.id),
+                timeout=10.0,
+            )  # Timeout after 10 seconds
+        else:
+            async for message in context.channel.history(limit=None):
+                if message.id == context.message.id:
+                    continue
+                if message.author.id == context.author.id:
+                    output = message
+                    break
     except asyncio.TimeoutError:
         log.info("Timed out")
         raise

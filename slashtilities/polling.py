@@ -1,11 +1,11 @@
 import asyncio
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Union
 
 import discord
 from discord.ext import commands
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option
-
+from discord_slash.context import SlashContext
 from slashtilities import log, utils
 
 
@@ -99,7 +99,9 @@ def get_emoji_for(thing: int) -> str:
     return emoji_dict[thing]
 
 
-async def yesno(self, ctx: commands.Context, question: Optional[str] = None) -> None:
+async def yesno(
+    self, ctx: Union[SlashContext, commands.Context], question: Optional[str] = None
+) -> None:
     """Send a yes-or-no question (not mutually exclusive)"""
     log.info("START OF `yesno`")
     log.info("Sending response")
@@ -112,14 +114,7 @@ async def yesno(self, ctx: commands.Context, question: Optional[str] = None) -> 
             pass
 
         try:
-            skip = True
-            async for message in ctx.channel.history(limit=None):
-                if message.author.id == ctx.author.id:
-                    if skip:
-                        skip = False
-                        continue
-                    question = message
-                    break
+            question = await utils.get_last_message_from(ctx)
         except asyncio.TimeoutError:
             MESSAGE = "You didn't specify a question, and I tried to find your last message but it took too long"
             try:

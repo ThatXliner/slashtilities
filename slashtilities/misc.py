@@ -119,7 +119,7 @@ async def igotpinged(self, ctx: commands.Context) -> None:
         pass
     log.info("Deffered.")
     try:
-        last_msg = await utils.get_last_message_from(ctx.author, channel=ctx.channel)
+        last_msg = await utils.get_last_message_from(ctx)
     except discord.errors.Forbidden:
         log.info("Sending response (errored)")
         await ctx.send(
