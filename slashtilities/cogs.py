@@ -56,7 +56,7 @@ class Polling(metaclass=CogMeta):
                 "question",
                 "The question you're going to ask",
                 option_type=SlashCommandOptionType.STRING,
-                required=True,
+                required=False,
             ),
         ],
     }
