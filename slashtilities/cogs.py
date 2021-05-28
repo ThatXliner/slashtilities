@@ -39,7 +39,7 @@ class CogMeta(type):
 
 
 class Misc(metaclass=CogMeta):
-    emoji_backup = "Back up some emojis"
+    emoji_backup = "Back up the guild's emojis"
     igotpinged = "Get the person who pinged you ever since your last message"
 
 

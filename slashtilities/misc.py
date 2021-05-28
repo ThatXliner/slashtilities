@@ -13,7 +13,7 @@ from slashtilities import log, utils
 
 
 async def emoji_backup(self, ctx: commands.Context):
-    """Back up some emojis"""
+    """Back up the guild's emojis"""
     print("Backing up...")
     if ctx.guild is None:
         ctx.send(embed=await utils.errorize("This is a guild-only command"))
