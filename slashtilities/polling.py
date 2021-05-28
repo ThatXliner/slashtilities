@@ -105,6 +105,17 @@ async def yesno(
     """Send a yes-or-no question (not mutually exclusive)"""
     log.info("START OF `yesno`")
     log.info("Sending response")
+
+    async def send_msg(msg: str) -> None:
+        try:
+            await ctx.send(msg, hidden=True)
+        except TypeError:
+            await ctx.send(msg, delete_after=5)
+            try:
+                await ctx.message.delete()
+            except discord.errors.Forbidden:
+                pass
+
     if question is None:
         log.info("No question specified, using last message")
         # It'll take some time
@@ -116,26 +127,17 @@ async def yesno(
         try:
             question = await utils.get_last_message_from(ctx)
         except asyncio.TimeoutError:
-            MESSAGE = "You didn't specify a question, and I tried to find your last message but it took too long"
-            try:
-                await ctx.send(MESSAGE, hidden=True)
-            except TypeError:
-                await ctx.send(MESSAGE, delete_after=5)
+            await send_msg(
+                "You didn't specify a question, and I tried to find your last message but it took too long"
+            )
         else:
             if question is None:
-                MESSAGE = "Could not find your last message"
-                try:
-                    await ctx.send(MESSAGE, hidden=True)
-                except TypeError:
-                    await ctx.send(MESSAGE, delete_after=5)
+                await send_msg("Could not find your last message")
             else:
-                MESSAGE = "Done. Added the proper reactions to it"
-                try:
-                    await ctx.send(MESSAGE, hidden=True)
-                except TypeError:
-                    await ctx.send(MESSAGE, delete_after=5)
                 await question.add_reaction("\N{THUMBS UP SIGN}")
                 await question.add_reaction("\N{THUMBS DOWN SIGN}")
+
+                await send_msg("Done. Added the proper reactions to it")
     else:
         try:
             msg = await ctx.send(
