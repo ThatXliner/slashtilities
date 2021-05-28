@@ -25,6 +25,39 @@ slash = SlashCommand(bot, sync_commands=True)
 
 
 @bot.event
+async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
+    # TODO: Replace "bot" with *this bot*
+    # Check if reacting to a message a bot has reacted to
+
+    if not any(
+        [
+            (await other_reactions.users().find(lambda reactor: reactor.bot))
+            for other_reactions in reaction.message.reactions
+        ]
+    ):
+        return
+    # Check if a user is not reacting to the bot-given reaction...
+    if (not user.bot) and await reaction.users().find(lambda user: user.bot) is None:
+        # Then remove that reaction
+        try:
+            await reaction.remove(user)
+        except discord.errors.Forbidden:
+            pass  # Fail silently because this should work unnoticed, in the background
+        # Why? I hate it when trolls do something like
+        # add a ":three:" reaction to a 2-option poll
+        # no more trolls!
+
+
+@bot.event
+async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent) -> None:
+    if payload.user_id == bot.user.id:
+        channel = bot.get_channel(payload.channel_id)
+        assert isinstance(channel, discord.TextChannel)
+        message = channel.get_partial_message(payload.message_id)
+        await message.add_reaction(payload.emoji)
+
+
+@bot.event
 async def on_ready():
     print("\N{WHITE HEAVY CHECK MARK} I am ready!")
 
