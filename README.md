@@ -32,6 +32,12 @@ When you're in servers where people talk 100 messages a minute, this command is 
 
 While Discord's find feature is nice, typing `/igotpinged` saves a lot of keystrokes or (in the case of mobile) tapping.
 
+#### `/emoji_backup`
+
+> Back up the guild's emojis
+
+Get a copy of the current guild (server)'s emojis. This is useful for backing up emojis for a guild that freely allows emoji modification (e.g. [my server](https://thatxliner.github.io/discord/server.html)).
+
 #### ~~`/cc @someone, ...`~~ (currently disabled)
 
 > Sends a dm to the people you `/cc`'d with your last message's contents and jump-link. Also tells them who else you CC'd
