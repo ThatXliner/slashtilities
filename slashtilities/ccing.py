@@ -21,7 +21,7 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
     await ctx.defer()
     filtered = [user for user in users if not (user.bot or user.id == ctx.author.id)]
     if filtered:
-        last_msg = await utils.get_last_message_from(ctx.author, channel=ctx.channel)
+        last_msg = await utils.get_last_message_from(ctx)
         if last_msg is None:
             ctx.send(
                 embed=await utils.errorize(f"Bruh, you have no messages to {atype}")
