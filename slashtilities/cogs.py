@@ -21,14 +21,11 @@ class CogMeta(type):
             if not func_name[0] == "_":
                 base_func = getattr(module, func_name)
                 assert base_func.__name__ == func_name
-                if isinstance(options, str) and (
-                    None
-                    not in {
-                        base_func.__doc__,
-                        options,
-                    }
-                ):
+                if isinstance(options, str):
                     options = {"description": options}
+                elif options is None:
+                    assert base_func.__doc__ is not None
+                    options = {"description": base_func.__doc__}
                 new_attrs[f"slash_{func_name}"] = cog_ext.cog_slash(
                     **{"name": func_name, "description": base_func.__doc__, **options}
                 )(base_func)
@@ -41,37 +38,15 @@ class CogMeta(type):
         return new_class
 
 
-# def cogged(cls):
-#     module = importlib.import_module(cls.__name__.lower(), "slashtilities")
-#
-#     def init(self, bot: Bot) -> None:
-#         self.bot = bot
-#
-#     class new_class(cls, Cog):
-#         ...
-#
-#     for func_name, options in new_class.__dict__.items():
-#         if not func_name[0] == "_":
-#             base_func = getattr(module, func_name)
-#             setattr(
-#                 new_class,
-#                 f"slash_{func_name}",
-#                 cog_ext.cog_slash(name=func_name, **options)(base_func),
-#             )
-#             setattr(
-#                 new_class,
-#                 func_name,
-#                 base_func,
-#             )
-#
-#     setattr(new_class, "__init__", init)
-#     return new_class
+class Misc(metaclass=CogMeta):
+    emoji_backup = "Back up some emojis"
+    igotpinged = "Get the person who pinged you ever since your last message"
 
 
-# @cogged
 class Meta(metaclass=CogMeta):
     invite = "Our bot's invite links!"
     vote = "Vote for our bot here!"
+    ping = "Return the latency of the bot"
 
 
 class Polling(metaclass=CogMeta):
