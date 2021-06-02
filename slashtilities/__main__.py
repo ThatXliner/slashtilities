@@ -131,7 +131,9 @@ async def on_slash_command_error(ctx, exception):
                 allowed_mentions=discord.AllowedMentions().none(),
             )
         except:
-            pass
+            log.critical(
+                traceback.format_exception(type(exception), exception, exception.__traceback__)
+            )
 
 
 # if os.environ.get("DISCORD_TESTING") == "1":
