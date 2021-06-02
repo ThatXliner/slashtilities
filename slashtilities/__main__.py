@@ -17,7 +17,7 @@ bot = Bot(
     when_mentioned_or("/"),
     intents=intents,
     activity=discord.Activity(
-        type=discord.ActivityType.watching, name="@ThatXliner#1995 code me"
+        type=discord.ActivityType.watching, name="ducks swim for hours"
     ),
 )
 slash = SlashCommand(bot, sync_commands=True)
