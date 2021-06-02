@@ -8,18 +8,12 @@ from discord.ext.commands import Bot, when_mentioned_or
 # Importing the newly installed library.
 from discord_slash import SlashCommand
 
-from slashtilities import cogs, log, utils
+from slashtilities import cogs, log, utils, background
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = Intents().default()
 
-bot = Bot(
-    when_mentioned_or("/"),
-    intents=intents,
-    activity=discord.Activity(
-        type=discord.ActivityType.watching, name="ducks swim for hours"
-    ),
-)
+bot = Bot(when_mentioned_or("/"), intents=intents)
 slash = SlashCommand(bot, sync_commands=True)
 
 
@@ -58,7 +52,7 @@ async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent) -> Non
 
 @bot.event
 async def on_ready():
-    print("\N{WHITE HEAVY CHECK MARK} I am ready!")
+    log.info("\N{WHITE HEAVY CHECK MARK} I am ready!")
 
 
 @bot.event
@@ -112,29 +106,32 @@ async def on_slash_command_error(ctx, exception):
         .set_footer(text="😓 sorry.")
     )
     try:
-        await ctx.channel.send(
+        await ctx.send(
             embed=to_send,
             allowed_mentions=discord.AllowedMentions().none(),
         )
     except:
-        await ctx.send(
-            (
-                "😱 AHHHHHHH!!! AN ***UNCAUGHT EXCEPTION!!!***\n"
-                ":bug: You should tell us about this\n"
-                "Go to the [issue tracker](https://github.com/ThatXliner/slashtilities/issues) to do that.\n"
-                "Make sure to screenshot/link/keep this message because "
-                "the information below is very valuable for debugging.\n\n"
-                "Traceback:\n"
-                "```py\n"
-                + "\n".join(
-                    traceback.format_exception(
-                        type(exception), exception, exception.__traceback__
+        try:
+            await ctx.channel.send(
+                (
+                    "😱 AHHHHHHH!!! AN ***UNCAUGHT EXCEPTION!!!***\n"
+                    ":bug: You should tell us about this\n"
+                    "Go to the [issue tracker](https://github.com/ThatXliner/slashtilities/issues) to do that.\n"
+                    "Make sure to screenshot/link/keep this message because "
+                    "the information below is very valuable for debugging.\n\n"
+                    "Traceback:\n"
+                    "```py\n"
+                    + "\n".join(
+                        traceback.format_exception(
+                            type(exception), exception, exception.__traceback__
+                        )
                     )
-                )
-                + "\n```"
-            ),
-            allowed_mentions=discord.AllowedMentions().none(),
-        )
+                    + "\n```"
+                ),
+                allowed_mentions=discord.AllowedMentions().none(),
+            )
+        except:
+            pass
 
 
 # if os.environ.get("DISCORD_TESTING") == "1":
@@ -147,6 +144,7 @@ bot.add_cog(cogs.Meta(bot))
 bot.add_cog(cogs.Polling(bot))
 bot.add_cog(cogs.CCing(bot))
 bot.add_cog(cogs.Misc(bot))
+bot.add_cog(background.MetaTasks(bot))
 # Commented out because should be a mod-only command
 # @slash.slash(
 #     name="purge",
