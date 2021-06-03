@@ -3,9 +3,10 @@ from typing import Dict, Iterable, List, Optional, Union
 
 import discord
 from discord.ext import commands
+from discord_slash.context import SlashContext
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option
-from discord_slash.context import SlashContext
+
 from slashtilities import log, utils
 
 

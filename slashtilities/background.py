@@ -1,6 +1,6 @@
-from discord.ext import tasks
-from discord.ext import commands
 import discord
+from discord.ext import commands, tasks
+
 from slashtilities import log
 
 # pylint: disable=E1101  # Man, get your types right

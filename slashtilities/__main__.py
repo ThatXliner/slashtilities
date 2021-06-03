@@ -8,7 +8,7 @@ from discord.ext.commands import Bot, when_mentioned_or
 # Importing the newly installed library.
 from discord_slash import SlashCommand
 
-from slashtilities import cogs, log, utils, background
+from slashtilities import background, cogs, log, utils
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = Intents().default()

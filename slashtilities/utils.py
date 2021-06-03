@@ -6,10 +6,10 @@ import sys
 from typing import Optional, Tuple, Union
 
 import discord
+from discord.ext.commands import Context
+from discord_slash.context import SlashContext
 
 from slashtilities import log
-from discord_slash.context import SlashContext
-from discord.ext.commands import Context
 
 
 async def get_last_message_from(
