@@ -19,17 +19,13 @@ slash = SlashCommand(bot, sync_commands=True)
 
 @bot.event
 async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
-    # Check if reacting to a message a bot has reacted to
 
-    if not any(
-        [
-            (await other_reactions.users().find(lambda reactor: reactor.id == bot.user.id))
-            for other_reactions in reaction.message.reactions
-        ]
-    ):
+    # Check if reacting to a message a bot has reacted to
+    if not any([other_reactions.me for other_reactions in reaction.message.reactions]):
         return
+
     # Check if a user is not reacting to the bot-given reaction...
-    if (not user.id == bot.user.id) and await reaction.users().find(lambda user: user.id == bot.user.id) is None:
+    if (not user.id == bot.user.id) and (not reaction.me):
         # Then remove that reaction
         try:
             await reaction.remove(user)
@@ -131,7 +127,9 @@ async def on_slash_command_error(ctx, exception):
             )
         except:
             log.critical(
-                traceback.format_exception(type(exception), exception, exception.__traceback__)
+                traceback.format_exception(
+                    type(exception), exception, exception.__traceback__
+                )
             )
 
 
