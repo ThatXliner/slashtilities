@@ -30,6 +30,11 @@ async def poll(
     log.info("Poll made; sending response...")
     choices = list(choices)
     choices.extend(choices_dict.values())
+    if len(set(choices)) != len(choices):
+        await utils.send_hidden_message(
+            ctx, "You cannot have duplicate choices in your polls"
+        )
+        return
     try:
         msg = await ctx.send(
             embed=discord.Embed(
