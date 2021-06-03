@@ -94,6 +94,17 @@ async def disable(ctx, why: str = "The devs have not given why") -> None:
     )
 
 
+async def send_hidden_message(ctx, msg: str) -> None:
+    try:
+        await ctx.send(msg, hidden=True)
+    except TypeError:
+        await ctx.send(msg, delete_after=5)
+        try:
+            await ctx.message.delete()
+        except discord.errors.Forbidden:
+            pass
+
+
 async def quote(msg: str) -> str:
     output = ""
     for line in msg.splitlines():
