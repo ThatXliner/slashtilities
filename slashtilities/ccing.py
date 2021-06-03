@@ -18,7 +18,10 @@ async def cc(self, ctx: commands.Context, **users) -> None:
 
 
 async def cc_helper(ctx: commands.Context, msg_func, atype, users):
-    await ctx.defer()
+    try:
+        await ctx.defer()
+    except AttributeError:
+        pass
     filtered = [user for user in users if not (user.bot or user.id == ctx.author.id)]
     if filtered:
         last_msg = await utils.get_last_message_from(ctx)
