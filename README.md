@@ -59,7 +59,7 @@ Basically [`/cc`](#cc-someone-) but the dm message doesn't tell them who else yo
 
 #### `/poll question, choice1, choice2, ...`
 
-> Send a multi-choice poll (not mutually exclusive)
+> Send a multi-choice poll (options mutually exclusive)
 
 This is useful if you want a group vote. This command will also add the nessecary reactions.
 
@@ -67,7 +67,7 @@ This is useful if you want a group vote. This command will also add the nessecar
 
 #### `/yesno question`
 
-> Send a yes-or-no question (not mutually exclusive)
+> Send a yes-or-no question (options mutually exclusive)
 
 Because yes. Or was it no?
 

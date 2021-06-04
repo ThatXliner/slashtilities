@@ -19,10 +19,13 @@ slash = SlashCommand(bot, sync_commands=True)
 
 @bot.event
 async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
+    if payload.user_id == bot.user.id:
+        return
     message = await bot.get_channel(payload.channel_id).fetch_message(
         payload.message_id
     )
     reactions = message.reactions
+
     # Check if reacting to a message a bot has reacted to
     if not any((other_reactions.me for other_reactions in reactions)):
         return
@@ -39,6 +42,37 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
         # Why? I hate it when trolls do something like
         # add a ":three:" reaction to a 2-option poll
         # no more trolls!
+    else:
+        last_reaction = [
+            reaction
+            for reaction in reactions
+            if str(reaction.emoji) != str(payload.emoji)
+            and await reaction.users().get(id=payload.user_id)
+        ]
+        if (
+            str(payload.emoji)
+            in {
+                "1️⃣",
+                "2️⃣",
+                "3️⃣",
+                "4️⃣",
+                "5️⃣",
+                "6️⃣",
+                "7️⃣",
+                "8️⃣",
+                "9️⃣",
+                "🔟",
+                "👍",
+                "👎",
+            }
+            and last_reaction
+        ):  # Why the list? For future proofing
+            try:
+                await message.remove_reaction(
+                    last_reaction[-1], payload.member or bot.get_user(payload.user_id)
+                )
+            except discord.errors.Forbidden:
+                pass  # Again, fail silently
 
 
 @bot.event
