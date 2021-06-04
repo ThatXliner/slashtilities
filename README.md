@@ -59,19 +59,17 @@ Basically [`/cc`](#cc-someone-) but the dm message doesn't tell them who else yo
 
 #### `/poll question, choice1, choice2, ...`
 
-> Send a multi-choice poll (options mutually exclusive)
+> Send a multi-choice poll (not mutually exclusive)
 
-This is useful if you want a group vote. This command will also add the necessary reactions.
-
-This differs from Dyno's `poll` command in that it enforces the mutually exclusive reactions
+This is useful if you want a group vote. This command will also add the nessecary reactions.
 
 **NOTE:** The current limit of choices is 10
 
 #### `/yesno question`
 
-> Send a yes-or-no question (options mutually exclusive)
+> Send a yes-or-no question (not mutually exclusive)
 
-Because yes. Or was it no? It's like [`/poll`](#poll-question-choice1-choice2) because it *also* has mutually exclusive options. But, instead of allowing the choices to be configurable, there are only 2: :+1: and :-1:.
+Because yes. Or was it no?
 
 #### `/invite`
 

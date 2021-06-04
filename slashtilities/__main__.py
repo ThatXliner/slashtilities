@@ -23,59 +23,24 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
         payload.message_id
     )
     reactions = message.reactions
-    reactions_from_user = [  # TODO: Find another way...
-        # 1. not the same as the new reaction
-        # 2. from the same author
-        reaction
-        for reaction in reactions
-        if (
-            await reaction.users().get(id=payload.user_id)
-            and str(reaction.emoji) != str(payload.emoji)
-        )
-    ]
     # Check if reacting to a message a bot has reacted to
     if not any((other_reactions.me for other_reactions in reactions)):
         return
 
-    if not payload.user_id == bot.user.id:  # Check if non-bot
-        if str(
-            payload.emoji
-        ) not in {  # Check if a user is not reacting to the bot-given reaction...
-            str(reaction.emoji) for reaction in reactions if reaction.me
-        }:
-            # Then remove that reaction
-            try:
-                await message.remove_reaction(
-                    payload.emoji, payload.member or bot.get_user(payload.user_id)
-                )
-            except discord.errors.Forbidden:
-                pass  # Fail silently because this should work unnoticed, in the background
-            # Why? I hate it when trolls do something like
-            # add a ":three:" reaction to a 2-option poll
-            # no more trolls!
-        # Or... check for mutually exclusive stuff!
-        elif (
-            str(payload.emoji)
-            in {
-                "1️⃣",
-                "2️⃣",
-                "3️⃣",
-                "4️⃣",
-                "5️⃣",
-                "6️⃣",
-                "7️⃣",
-                "8️⃣",
-                "9️⃣",
-                "🔟",
-                "👍",
-                "👎",
-            }  # Why the list? For future proofing
-            and reactions_from_user
-        ):
+    # Check if a user is not reacting to the bot-given reaction...
+    if (not payload.user_id == bot.user.id) and str(payload.emoji) not in {
+        str(reaction.emoji) for reaction in reactions if reaction.me
+    }:
+        # Then remove that reaction
+        try:
             await message.remove_reaction(
-                reactions_from_user[0],
-                payload.member or bot.get_user(payload.user_id),
+                payload.emoji, payload.member or bot.get_user(payload.user_id)
             )
+        except discord.errors.Forbidden:
+            pass  # Fail silently because this should work unnoticed, in the background
+        # Why? I hate it when trolls do something like
+        # add a ":three:" reaction to a 2-option poll
+        # no more trolls!
 
 
 @bot.event
