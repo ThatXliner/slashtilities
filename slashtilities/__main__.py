@@ -23,13 +23,24 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
         payload.message_id
     )
     reactions = message.reactions
+    reactions_from_user = [  # TODO: Find another way...
+        # 1. not the same as the new reaction
+        # 2. from the same author
+        reaction
+        for reaction in reactions
+        if (
+            await reaction.users().get(id=payload.user_id)
+            and str(reaction.emoji) != str(payload.emoji)
+        )
+    ]
     # Check if reacting to a message a bot has reacted to
     if not any((other_reactions.me for other_reactions in reactions)):
         return
 
-    # Check if a user is not reacting to the bot-given reaction...
-    if not payload.user_id == bot.user.id:
-        if str(payload.emoji) not in {
+    if not payload.user_id == bot.user.id:  # Check if non-bot
+        if str(
+            payload.emoji
+        ) not in {  # Check if a user is not reacting to the bot-given reaction...
             str(reaction.emoji) for reaction in reactions if reaction.me
         }:
             # Then remove that reaction
@@ -43,32 +54,28 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
             # add a ":three:" reaction to a 2-option poll
             # no more trolls!
         # Or... check for mutually exclusive stuff!
-        elif str(payload.emoji) in {
-            "1️⃣",
-            "2️⃣",
-            "3️⃣",
-            "4️⃣",
-            "5️⃣",
-            "6️⃣",
-            "7️⃣",
-            "8️⃣",
-            "9️⃣",
-            "🔟",
-            "👍",
-            "👎",
-        }:  # Why the list? For future proofing
-            for reaction in reactions:  # Not gonna use list comprehensions for clarity
-                if reaction.emoji != payload.emoji and await reaction.users().get(
-                    id=payload.user_id
-                ):
-                    # Remove old reaction that is
-                    # 1. not the same as the new reaction
-                    # 2. from the same author
-                    await message.remove_reaction(
-                        reaction.emoji,
-                        payload.member or bot.get_user(payload.user_id),
-                    )
-                    break
+        elif (
+            str(payload.emoji)
+            in {
+                "1️⃣",
+                "2️⃣",
+                "3️⃣",
+                "4️⃣",
+                "5️⃣",
+                "6️⃣",
+                "7️⃣",
+                "8️⃣",
+                "9️⃣",
+                "🔟",
+                "👍",
+                "👎",
+            }  # Why the list? For future proofing
+            and reactions_from_user
+        ):
+            await message.remove_reaction(
+                reactions_from_user[0],
+                payload.member or bot.get_user(payload.user_id),
+            )
 
 
 @bot.event
