@@ -57,7 +57,7 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
             "👍",
             "👎",
         }:  # Why the list? For future proofing
-            for reaction in reactions:
+            for reaction in reactions:  # Not gonna use list comprehensions for clarity
                 if reaction.emoji != payload.emoji and await reaction.users().get(
                     id=payload.user_id
                 ):
