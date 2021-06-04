@@ -18,17 +18,24 @@ slash = SlashCommand(bot, sync_commands=True)
 
 
 @bot.event
-async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
-
+async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
+    message = await bot.get_channel(payload.channel_id).fetch_message(
+        payload.message_id
+    )
+    reactions = message.reactions
     # Check if reacting to a message a bot has reacted to
-    if not any([other_reactions.me for other_reactions in reaction.message.reactions]):
+    if not any((other_reactions.me for other_reactions in reactions)):
         return
 
     # Check if a user is not reacting to the bot-given reaction...
-    if (not user.id == bot.user.id) and (not reaction.me):
+    if (not payload.user_id == bot.user.id) and str(payload.emoji) not in {
+        str(reaction.emoji) for reaction in reactions if reaction.me
+    }:
         # Then remove that reaction
         try:
-            await reaction.remove(user)
+            await message.remove_reaction(
+                payload.emoji, payload.member or bot.get_user(payload.user_id)
+            )
         except discord.errors.Forbidden:
             pass  # Fail silently because this should work unnoticed, in the background
         # Why? I hate it when trolls do something like
