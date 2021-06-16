@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord_slash.model import SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option
 
-from slashtilities import utils, db
+from slashtilities import db, utils
 
 
 async def cc(self, ctx: commands.Context, **users) -> None:
@@ -102,7 +102,7 @@ async def create_bcc_message(ctx: commands.Context, _, from_message, to):
             inline=False,
         )
         .set_footer(
-            text="Run `/settings set dm false` to stop getting dm notifications"
+            text="Run `/settings set should_dm false` to stop getting dm notifications"
         )
     )
 
@@ -120,11 +120,9 @@ async def create_cc_message(ctx: commands.Context, other_people, from_message, t
         .add_field(
             name="Other people who have also been CC'd are:",
             value="".join(
-                (
-                    f" - {person.mention}\n"
-                    for person in other_people
-                    if person not in {ctx.author, to}
-                )
+                f" - {person.mention}\n"
+                for person in other_people
+                if person not in {ctx.author, to}
             )
             or "No one, you're the only one CC'd",
             inline=False,
@@ -135,7 +133,7 @@ async def create_cc_message(ctx: commands.Context, other_people, from_message, t
             inline=False,
         )
         .set_footer(
-            text="Run `/settings set dm false` to stop getting dm notifications"
+            text="Run `/settings set should_dm false` to stop getting dm notifications"
         )
     )
 

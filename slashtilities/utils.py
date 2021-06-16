@@ -133,10 +133,11 @@ async def convert(thing: str) -> Union[bool, float]:
         return float(normalized)
     except ValueError:
         pass
-    if normalized in {"yes", "y", "yeah", "yep", "yup"}:
+    if normalized in {"yes", "y", "yeah", "yep", "yup", "t", "true"}:
         return True
-    if normalized in {"no", "n", "nope", "nah", "naw"}:
+    if normalized in {"no", "n", "nope", "nah", "naw", "f", "false"}:
         return False
+    raise ValueError("Invalid thing")
 
 
 NO_MENTIONS = discord.AllowedMentions.none()

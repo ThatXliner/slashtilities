@@ -1,6 +1,7 @@
 import logging
 
 from rich.logging import RichHandler
+
 from . import database
 
 __version__ = "0.1.0"

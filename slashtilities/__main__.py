@@ -7,9 +7,8 @@ from discord.ext.commands import Bot, when_mentioned_or
 
 # Importing the newly installed library.
 from discord_slash import SlashCommand
-from discord_slash.utils import manage_commands
-from discord_slash.model import SlashCommandOptionType
-from slashtilities import background, cogs, log, utils, db
+
+from slashtilities import background, cogs, log, utils, settings
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = Intents().default()
@@ -28,7 +27,7 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     reactions = message.reactions
 
     # Check if reacting to a message a bot has reacted to
-    if not any((other_reactions.me for other_reactions in reactions)):
+    if not any(other_reactions.me for other_reactions in reactions):
         return
 
     # Check if a user is not reacting to the bot-given reaction...
@@ -179,50 +178,6 @@ async def on_slash_command_error(ctx, exception):
 #     return os.environ["DISCORD_TEST_GUILDS"].split(",") or None
 # else:
 #     return None
-@slash.subcommand(base="settings", name="show", description="Show your settings")
-async def _settings_show(ctx) -> None:
-    to_send = discord.Embed(
-        title="Your settings",
-        description="Fresh from the database! :bread:",
-        color=discord.Color.blurple(),
-    )
-    for name, value in (await db.get_preferences_for(ctx.author.id)).items():
-        if name == "snowflake":
-            continue
-        to_send.add_field(name=name, value=value)
-    await ctx.send(embed=to_send)
-
-
-@slash.subcommand(
-    base="settings",
-    name="set",
-    description="Set your settings",
-    options=[
-        manage_commands.create_option(
-            "value",
-            "The name of the value to change",
-            option_type=SlashCommandOptionType.STRING,
-            required=True,
-        ),
-        manage_commands.create_option(
-            "to",
-            "The value to change to",
-            option_type=SlashCommandOptionType.STRING,
-            required=True,
-        ),
-    ],
-)
-async def _settings_set(ctx, setting_name: str, to: str) -> None:
-    if setting_name.lower() not in {"dm", "should_dm"}:
-        await ctx.send(embed=await utils.errorize("Setting not found"))
-    else:
-        converted = await utils.convert(to)
-        await db.update_preferences_for(ctx.author.id, converted)
-        await ctx.send(
-            embed=await utils.success(
-                f"Done! Set your setting `{setting_name.lower()}` to `{converted}`"
-            )
-        )
 
 
 bot.add_cog(cogs.Meta(bot))
@@ -230,6 +185,7 @@ bot.add_cog(cogs.Polling(bot))
 bot.add_cog(cogs.CCing(bot))
 bot.add_cog(cogs.Misc(bot))
 bot.add_cog(background.MetaTasks(bot))
+bot.add_cog(settings.Settings(bot))
 # Commented out because should be a mod-only command
 # @slash.slash(
 #     name="purge",
