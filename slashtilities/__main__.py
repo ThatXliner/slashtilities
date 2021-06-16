@@ -200,10 +200,16 @@ async def _settings_show(ctx) -> None:
     options=[
         manage_commands.create_option(
             "value",
+            "The name of the value to change",
+            option_type=SlashCommandOptionType.STRING,
+            required=True,
+        ),
+        manage_commands.create_option(
+            "to",
             "The value to change to",
             option_type=SlashCommandOptionType.STRING,
             required=True,
-        )
+        ),
     ],
 )
 async def _settings_set(ctx, setting_name: str, to: str) -> None:
