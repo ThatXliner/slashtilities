@@ -11,8 +11,6 @@
 
  - Intuitive, [slash command](https://discord.com/developers/docs/interactions/slash-commands#slash-commands)-based interface
  - Open source and written in [discord.py](https://discordpy.readthedocs.io/) and [discord-py-slash-command](https://discord-py-slash-command.readthedocs.io)
- - All commands do not require a database (for now)
- - Zero configuration needed
 
 ### Available commands
 #### `/ping`
@@ -38,7 +36,7 @@ While Discord's find feature is nice, typing `/igotpinged` saves a lot of keystr
 
 Get a copy of the current guild (server)'s emojis. This is useful for backing up emojis for a guild that freely allows emoji modification (e.g. [my server](https://thatxliner.github.io/discord/server.html)).
 
-#### ~~`/cc @someone, ...`~~ (currently disabled)
+#### `/cc @someone, ...`
 
 > Sends a dm to the people you `/cc`'d with your last message's contents and jump-link. Also tells them who else you CC'd
 
@@ -51,7 +49,7 @@ DMs are a safe and persistent place for dumping messages.
 
 **NOTE:** Because of Discord's current API limits, you can only [`/cc`](#cc-someone-)/[`/bcc`](#bcc-someone-) a limited number of people. I have currently made that limit *10* but **if you want to make the limit higher, request it in our [issue tracker][issue]**
 
-#### ~~`/bcc @someone, ...`~~ (currently disabled)
+#### `/bcc @someone, ...`
 
 > Sends a dm to the people you `/bcc`'d with your last message's contents and jump-link
 

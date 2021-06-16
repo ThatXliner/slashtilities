@@ -8,7 +8,7 @@ from discord.ext.commands import Bot, when_mentioned_or
 # Importing the newly installed library.
 from discord_slash import SlashCommand
 
-from slashtilities import background, cogs, log, utils
+from slashtilities import background, cogs, log, utils, settings
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = Intents().default()
@@ -16,7 +16,7 @@ intents = Intents().default()
 bot = Bot(when_mentioned_or("/"), intents=intents)
 slash = SlashCommand(bot, sync_commands=True)
 
-
+# TODO: listeners.py
 @bot.event
 async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     if payload.user_id == bot.user.id:
@@ -27,7 +27,7 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     reactions = message.reactions
 
     # Check if reacting to a message a bot has reacted to
-    if not any((other_reactions.me for other_reactions in reactions)):
+    if not any(other_reactions.me for other_reactions in reactions):
         return
 
     # Check if a user is not reacting to the bot-given reaction...
@@ -166,8 +166,10 @@ async def on_slash_command_error(ctx, exception):
             )
         except:
             log.critical(
-                traceback.format_exception(
-                    type(exception), exception, exception.__traceback__
+                "\n".join(
+                    traceback.format_exception(
+                        type(exception), exception, exception.__traceback__
+                    )
                 )
             )
 
@@ -183,6 +185,7 @@ bot.add_cog(cogs.Polling(bot))
 bot.add_cog(cogs.CCing(bot))
 bot.add_cog(cogs.Misc(bot))
 bot.add_cog(background.MetaTasks(bot))
+bot.add_cog(settings.Settings(bot))
 # Commented out because should be a mod-only command
 # @slash.slash(
 #     name="purge",
