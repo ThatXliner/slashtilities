@@ -11,8 +11,6 @@
 
  - Intuitive, [slash command](https://discord.com/developers/docs/interactions/slash-commands#slash-commands)-based interface
  - Open source and written in [discord.py](https://discordpy.readthedocs.io/) and [discord-py-slash-command](https://discord-py-slash-command.readthedocs.io)
- - All commands do not require a database (for now)
- - Zero configuration needed
 
 ### Available commands
 #### `/ping`
