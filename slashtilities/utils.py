@@ -52,7 +52,6 @@ async def errorize(error_msg: str) -> discord.Embed:
 
 
 async def success(msg: str) -> discord.Embed:
-    log.success(msg)
     return discord.Embed(
         title=":white_check_mark: Success!",
         description=msg,
