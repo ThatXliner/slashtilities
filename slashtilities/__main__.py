@@ -7,8 +7,9 @@ from discord.ext.commands import Bot, when_mentioned_or
 
 # Importing the newly installed library.
 from discord_slash import SlashCommand
-
-from slashtilities import background, cogs, log, utils
+from discord_slash.utils import manage_commands
+from discord_slash.model import SlashCommandOptionType
+from slashtilities import background, cogs, log, utils, db
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = Intents().default()
@@ -16,7 +17,7 @@ intents = Intents().default()
 bot = Bot(when_mentioned_or("/"), intents=intents)
 slash = SlashCommand(bot, sync_commands=True)
 
-
+# TODO: listeners.py
 @bot.event
 async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     if payload.user_id == bot.user.id:
@@ -166,8 +167,10 @@ async def on_slash_command_error(ctx, exception):
             )
         except:
             log.critical(
-                traceback.format_exception(
-                    type(exception), exception, exception.__traceback__
+                "\n".join(
+                    traceback.format_exception(
+                        type(exception), exception, exception.__traceback__
+                    )
                 )
             )
 
@@ -176,6 +179,44 @@ async def on_slash_command_error(ctx, exception):
 #     return os.environ["DISCORD_TEST_GUILDS"].split(",") or None
 # else:
 #     return None
+@slash.subcommand(base="settings", name="show", description="Show your settings")
+async def _settings_show(ctx) -> None:
+    to_send = discord.Embed(
+        title="Your settings",
+        description="Fresh from the database! :bread:",
+        color=discord.Color.blurple(),
+    )
+    for name, value in (await db.get_preferences_for(ctx.author.id)).items():
+        if name == "snowflake":
+            continue
+        to_send.add_field(name=name, value=value)
+    await ctx.send(embed=to_send)
+
+
+@slash.subcommand(
+    base="settings",
+    name="set",
+    description="Set your settings",
+    options=[
+        manage_commands.create_option(
+            "value",
+            "The value to change to",
+            option_type=SlashCommandOptionType.STRING,
+            required=True,
+        )
+    ],
+)
+async def _settings_set(ctx, setting_name: str, to: str) -> None:
+    if setting_name.lower() not in {"dm", "should_dm"}:
+        await ctx.send(embed=await utils.errorize("Setting not found"))
+    else:
+        converted = await utils.convert(to)
+        await db.update_preferences_for(ctx.author.id, converted)
+        await ctx.send(
+            embed=await utils.success(
+                f"Done! Set your setting `{setting_name.lower()}` to `{converted}`"
+            )
+        )
 
 
 bot.add_cog(cogs.Meta(bot))

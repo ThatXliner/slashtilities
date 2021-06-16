@@ -51,6 +51,15 @@ async def errorize(error_msg: str) -> discord.Embed:
     )
 
 
+async def success(msg: str) -> discord.Embed:
+    log.success(msg)
+    return discord.Embed(
+        title=":white_check_mark: Success!",
+        description=msg,
+        color=discord.Color.green(),
+    )
+
+
 async def joke_info() -> str:
     jokes: Tuple[str, ...] = (
         "Uses Heroku: True",
@@ -117,6 +126,18 @@ async def basically_today(msg_format: str) -> str:
     return msg_format.format(
         datetime.datetime.today().strftime("%B, %d, %Y (%m/%d/%Y)")
     )
+
+
+async def convert(thing: str) -> Union[bool, float]:
+    normalized = thing.lower().strip()
+    try:
+        return float(normalized)
+    except ValueError:
+        pass
+    if normalized in {"yes", "y", "yeah", "yep", "yup"}:
+        return True
+    if normalized in {"no", "n", "nope", "nah", "naw"}:
+        return False
 
 
 NO_MENTIONS = discord.AllowedMentions.none()
