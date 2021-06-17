@@ -61,14 +61,17 @@ class Database:
                 )
 
             # Space optimization
-            if await self.get_preferences_for(user) == self.DEFAULTS:
+            if await self.get_preferences_for(user) == {
+                "snowflake": user,
+                **self.DEFAULTS,
+            }:
                 async with conn.transaction():
                     await conn.execute(
                         "DELETE FROM slashtilities WHERE snowflake=$1", user
                     )
 
     async def should_dm(self, user: User) -> bool:
-        return (await self.get_preferences_for(user.id)).get("should_dm", True)
+        return await self.get_preferences_for(user.id)["should_dm"]
 
     # async def add(self, user: int) -> None:
     #     async with self.pool.acquire() as conn:
