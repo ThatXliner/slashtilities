@@ -55,7 +55,7 @@ async def success(msg: str) -> discord.Embed:
     return discord.Embed(
         title=":white_check_mark: Success!",
         description=msg,
-        color=discord.Color.green(),
+        color=discord.Color(0x75E16F),
     )
 
 
