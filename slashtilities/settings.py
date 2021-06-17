@@ -42,6 +42,7 @@ class Settings(commands.Cog):
 
     @commands.group(name="settings")
     async def normal_settings(self, ctx) -> None:
+        """Do stuff with your settings"""
         if ctx.invoked_subcommand is None:
             await self.settings_show(ctx)
 
@@ -80,7 +81,11 @@ class Settings(commands.Cog):
                 try:
                     await db.update_preferences_for(ctx.author.id, converted)
                 except asyncpg.exceptions.DataError:
-                    await ctx.send(embed=await utils.errorize(f"{to} is an invalid value for {setting_name}"))
+                    await ctx.send(
+                        embed=await utils.errorize(
+                            f"{to} is an invalid value for {setting_name}"
+                        )
+                    )
                 else:
                     await ctx.send(
                         embed=await utils.success(
