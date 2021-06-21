@@ -71,7 +71,7 @@ class Database:
                     )
 
     async def should_dm(self, user: User) -> bool:
-        return await self.get_preferences_for(user.id)["should_dm"]
+        return (await self.get_preferences_for(user.id))["should_dm"]
 
     # async def add(self, user: int) -> None:
     #     async with self.pool.acquire() as conn:
