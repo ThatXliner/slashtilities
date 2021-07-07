@@ -100,7 +100,7 @@ Just follow [this link](https://thatxliner.github.io/discord/bots/slashtilities.
  - PostgreSQL
  - Git (of course)
 
-If you're missing any of these requirements, check the [install requirements instructions](#install-requirements)
+If you're missing any of these requirements, check the [install requirements instructions](#installing-requirements)
 
 #### First steps
 
@@ -112,7 +112,7 @@ $ git clone https://github.com/ThatXliner/slashtilities
 
 #### Installing dependancies
 
-You got 2 options: [install the requirements with poetry](#with-poetry) or [install the requirements with pip (in a venv, of course)](#with-python-and-pip)
+You got 2 options: [install the dependancies with poetry](#with-poetry) or [install the dependancies with pip (in a venv, of course)](#with-python-and-pip)
 
 ##### With Python and pip
 
@@ -132,13 +132,16 @@ $ poetry install
 
 Finally, start running the bot. Remember to replace `<your token here>` with your actual Discord bot token.
 
-##### With Poetry
+You still got 2 options: [run the bot with poetry](#run-with-poetry) or [run the bot with Python in a venv](#run-with-python)
+
+
+##### Run with Poetry
 
 ```bash
 $ DISCORD_TOKEN="<your token here>" poetry run python -m slashtilities
 ```
 
-##### With Python
+##### Run with Python
 
 ```bash
 $ source .venv/bin/activate
