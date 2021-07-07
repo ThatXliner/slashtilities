@@ -182,10 +182,11 @@ async def on_slash_command_error(ctx, exception):
 
 bot.add_cog(cogs.Meta(bot))
 bot.add_cog(cogs.Polling(bot))
-bot.add_cog(cogs.CCing(bot))
 bot.add_cog(cogs.Misc(bot))
 bot.add_cog(background.MetaTasks(bot))
-bot.add_cog(settings.Settings(bot))
+if os.environ.get("NO_DB") != "1":
+    bot.add_cog(cogs.CCing(bot))
+    bot.add_cog(settings.Settings(bot))
 # Commented out because should be a mod-only command
 # @slash.slash(
 #     name="purge",

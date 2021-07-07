@@ -14,4 +14,9 @@ logging.basicConfig(
 )
 
 log = logging.getLogger(__name__)
-db = database.Database()
+
+
+def __getattr__(name: str) -> database.Database:
+    if name == "db":
+        return database.Database()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

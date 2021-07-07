@@ -13,7 +13,9 @@ class Database:
 
         loop = asyncio.get_event_loop()
         self.pool = loop.run_until_complete(
-            asyncpg.create_pool(os.environ["DATABASE_URL"])
+            asyncpg.create_pool(
+                os.environ.get("DATABASE_URL", "postgresql://localhost")
+            )
         )
         loop.run_until_complete(self._init_db())
 
