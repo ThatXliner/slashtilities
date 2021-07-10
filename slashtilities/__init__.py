@@ -3,6 +3,7 @@ import logging
 from rich.logging import RichHandler
 
 from . import database
+import os
 
 __version__ = "0.1.0"
 FORMAT = "%(asctime)s %(message)s"
@@ -14,4 +15,13 @@ logging.basicConfig(
 )
 
 log = logging.getLogger(__name__)
-db = database.Database()
+
+DB_ENABLED = os.environ.get("NO_DB") != "1"
+
+
+def __getattr__(name: str, __cache={}) -> database.Database:
+    if name == "db":
+        if __cache.get("db") is None:
+            __cache["db"] = database.Database()
+        return __cache["db"]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

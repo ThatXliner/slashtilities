@@ -94,20 +94,116 @@ Just follow [this link](https://thatxliner.github.io/discord/bots/slashtilities.
 
 ### Self-hosting the bot
 
-First, clone this git repository
+If you have Python 3.7+ installed (instructions [here](#python-37-and-pip)), you may run our experimental auto-installer via
+
+```bash
+$ curl -sSf https://raw.githubusercontent.com/ThatXliner/slashtilities/master/autoselfhost.py | python3 -
+```
+
+#### Requirements
+
+ - Python 3.7+ and pip OR the latest stable version of Poetry
+ - PostgreSQL
+ - Git (of course)
+
+If you're missing any of these requirements, check the [install requirements instructions](#installing-requirements)
+
+#### First steps
+
+No matter what, you still need to clone this git repository
 
 ```bash
 $ git clone https://github.com/ThatXliner/slashtilities
 ```
 
-Second, install the requirements (requires [Poetry](https://python-poetry.org))
+#### Installing dependancies
+
+You got 2 options: [install the dependancies with poetry](#with-poetry) or [install the dependancies with pip (in a venv, of course)](#with-python-and-pip)
+
+##### With Python and pip
+
+```bash
+$ python3 -m venv .venv
+$ source .venv/bin/activate
+(venv) $ pip install -r requirements.txt
+```
+
+##### With Poetry
 
 ```bash
 $ poetry install
 ```
 
+#### Running the bot
+
 Finally, start running the bot. Remember to replace `<your token here>` with your actual Discord bot token.
+
+You still got 2 options: [run the bot with poetry](#run-with-poetry) or [run the bot with Python in a venv](#run-with-python)
+
+
+##### Run with Poetry
 
 ```bash
 $ DISCORD_TOKEN="<your token here>" poetry run python -m slashtilities
 ```
+
+##### Run with Python
+
+```bash
+$ source .venv/bin/activate
+(venv) $ DISCORD_TOKEN="<your token here>" python3 -m slashtilities
+```
+
+### Installing requirements
+
+#### Git
+
+You should have Git. To check, run
+
+```bash
+$ git --help
+```
+
+If you don't, how come you're browsing GitHub? Anyways, you can download Git [here](https://git-scm.com/downloads)
+
+#### Python 3.7+ and pip
+
+You might already have Python 3.7+. To check, run
+
+```bash
+$ python3 -V
+```
+
+Get the latest version of Python [here](https://www.python.org/downloads/). Once you did that run
+
+```bash
+$ python3 -m ensurepip --upgrade --user
+```
+
+#### Poetry (optional)
+
+To make life easier, you can install Poetry [here](https://python-poetry.org/docs/#installation) or with
+
+```bash
+$ python3 -m pip install poetry
+```
+
+#### PostgreSQL
+
+You need PostgreSQL if you want features that have settings (e.g. `cc` and `bcc`).
+
+If you don't want to install PostgreSQL, set the environment variable `NO_DB` to `1` when running the bot.
+
+Otherwise, download PostgreSQL from [here](https://www.postgresql.org/download/)
+
+Verify that your PostgreSQL is installed via
+
+```bash
+$ psql -l
+```
+
+It should not error
+
+### Self-host (uninstalling)
+
+Just remove the `slashtilities` directory
