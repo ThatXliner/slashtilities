@@ -192,7 +192,7 @@ $ python3 -m pip install poetry
 
 You need PostgreSQL if you want features that have settings (e.g. `cc` and `bcc`).
 
-If you don't want to install PostgreSQL, set the environment variable `NO_DB` to `1`.
+If you don't want to install PostgreSQL, set the environment variable `NO_DB` to `1` when running the bot.
 
 Otherwise, download PostgreSQL from [here](https://www.postgresql.org/download/)
 
