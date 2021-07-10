@@ -94,6 +94,12 @@ Just follow [this link](https://thatxliner.github.io/discord/bots/slashtilities.
 
 ### Self-hosting the bot
 
+If you have Python 3.7+ installed (instructions [here](#python-37-and-pip)), you may run our experimental auto-installer via
+
+```bash
+$ curl -sSf https://raw.githubusercontent.com/ThatXliner/slashtilities/master/autoselfhost.py | python3 -
+```
+
 #### Requirements
 
  - Python 3.7+ and pip OR the latest stable version of Poetry
@@ -197,3 +203,7 @@ $ psql -l
 ```
 
 It should not error
+
+### Self-host (uninstalling)
+
+Just remove the `slashtilities` directory
