@@ -8,7 +8,7 @@ from discord.ext.commands import Bot, when_mentioned_or
 # Importing the newly installed library.
 from discord_slash import SlashCommand
 
-from slashtilities import background, cogs, log, utils, settings
+from slashtilities import background, cogs, log, utils, settings, DB_ENABLED
 
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = Intents().default()
@@ -185,7 +185,7 @@ bot.add_cog(cogs.Polling(bot))
 bot.add_cog(cogs.Misc(bot))
 bot.add_cog(background.MetaTasks(bot))
 bot.add_cog(cogs.CCing(bot))
-if os.environ.get("NO_DB") != "1":
+if DB_ENABLED:
     bot.add_cog(settings.Settings(bot))
 # Commented out because should be a mod-only command
 # @slash.slash(

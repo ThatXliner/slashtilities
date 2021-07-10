@@ -3,6 +3,7 @@ import logging
 from rich.logging import RichHandler
 
 from . import database
+import os
 
 __version__ = "0.1.0"
 FORMAT = "%(asctime)s %(message)s"
@@ -14,6 +15,8 @@ logging.basicConfig(
 )
 
 log = logging.getLogger(__name__)
+
+DB_ENABLED = os.environ.get("NO_DB") != "1"
 
 
 def __getattr__(name: str, __cache={}) -> database.Database:
