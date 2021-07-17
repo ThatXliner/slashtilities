@@ -1,0 +1,21 @@
+
+{
+  "name": "Slashtilities",
+  "description": "A nice and simple, slash command-based, Discord utility bot",
+  "repository": "https://github.com/ThatXliner/slashtilities",
+  "env": {
+    "DISCORD_TOKEN": {
+      "description": "Bot Discord token",
+      "required": true
+   },
+   "DATABASE_URL": {
+      "description": "PostgreSQL database URL",
+      "required": false
+   },
+   "NO_DB": {
+      "description": "Disable database",
+      "required": false
+   }
+  },
+  "keywords": ["bot", "discord", "python", "utilities"]
+}
