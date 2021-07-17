@@ -100,6 +100,8 @@ If you have Python 3.7+ installed (instructions [here](#python-37-and-pip)), you
 $ curl -sSf https://raw.githubusercontent.com/ThatXliner/slashtilities/master/autoselfhost.py | python3 -
 ```
 
+Or you can [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/ThatXliner/slashtilities)
+
 #### Requirements
 
  - Python 3.7+ and pip OR the latest stable version of Poetry
