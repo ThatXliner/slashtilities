@@ -14,7 +14,8 @@
    },
    "NO_DB": {
       "description": "Disable database",
-      "required": false
+      "required": false,
+      "value": "0"
    }
   },
   "keywords": ["bot", "discord", "python", "utilities"]
