@@ -85,7 +85,10 @@ Please.
 
 > ???
 
-Suggest your command in our [issue tracker][https://github.com/ThatXliner/slashtilities/issues/]! Maybe the newest command came from your idea!
+Suggest your command in our [issue tracker][issue]! Maybe the newest command came from your idea!
+
+[issue]: https://github.com/ThatXliner/slashtilities/issues
+
 ## Instructions
 
 ### Adding to your server
