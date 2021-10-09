@@ -147,12 +147,21 @@ python-versions = "*"
 test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
 
 [[package]]
-name = "discord-py-slash-command"
-version = "1.2.2"
-description = "A simple discord slash command handler for discord.py."
+name = "discord-py-interactions"
+version = "3.0.2"
+description = "A simple API wrapper for Discord interactions."
 category = "main"
 optional = false
 python-versions = ">=3.6"
+
+[package.dependencies]
+aiohttp = "*"
+"discord.py" = "*"
+
+[package.extras]
+dev = ["black", "flake8", "isort", "sphinx", "sphinx-rtd-theme"]
+lint = ["black", "flake8", "isort", "sphinx", "sphinx-rtd-theme"]
+readthedocs = ["sphinx", "sphinx-rtd-theme"]
 
 [[package]]
 name = "discord.py"
@@ -350,6 +359,21 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
+name = "py-cord"
+version = "1.7.3"
+description = "A Python wrapper for the Discord API"
+category = "main"
+optional = false
+python-versions = ">=3.5.3"
+
+[package.dependencies]
+aiohttp = ">=3.6.0,<3.8.0"
+
+[package.extras]
+docs = ["sphinx (==3.0.3)", "sphinxcontrib-trio (==1.1.2)", "sphinxcontrib-websupport"]
+voice = ["PyNaCl (>=1.3.0,<1.5)"]
+
+[[package]]
 name = "pygments"
 version = "2.9.0"
 description = "Pygments is a syntax highlighting package written in Python."
@@ -504,7 +528,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "ba106c1adf58ecdbcc4d9137320c2f299adf77aa5fedc41fc37a363a0be1a5c6"
+content-hash = "4fa7a84c1e1d154377e94b4a7b58f55ef05521da2a85fe700bf6ba994b382602"
 
 [metadata.files]
 aiohttp = [
@@ -602,9 +626,9 @@ commonmark = [
     {file = "commonmark-0.9.1-py2.py3-none-any.whl", hash = "sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9"},
     {file = "commonmark-0.9.1.tar.gz", hash = "sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60"},
 ]
-discord-py-slash-command = [
-    {file = "discord-py-slash-command-1.2.2.tar.gz", hash = "sha256:192b4454bb5ca9e6032812a4142469782ab7a8a4f93c13fb04bb5a2ff100ddfb"},
-    {file = "discord_py_slash_command-1.2.2-py3-none-any.whl", hash = "sha256:5539b931af40b3bc91ee0a8ed1e97a58400c442ef542007db9dda315dce90144"},
+discord-py-interactions = [
+    {file = "discord-py-interactions-3.0.2.tar.gz", hash = "sha256:14f11c2333a2287991abfe5169cd7be5d25fdaadec546f0da6cbd3de00fc75bd"},
+    {file = "discord_py_interactions-3.0.2-py3-none-any.whl", hash = "sha256:b50eb92d2b86bda71b02077d95a3089205f6b981baea28304ee80916e0a22029"},
 ]
 "discord.py" = [
     {file = "discord.py-1.7.3-py3-none-any.whl", hash = "sha256:c6f64db136de0e18e090f6752ea68bdd4ab0a61b82dfe7acecefa22d6477bb0c"},
@@ -752,6 +776,10 @@ poethepoet = [
 py = [
     {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
     {file = "py-1.10.0.tar.gz", hash = "sha256:21b81bda15b66ef5e1a777a21c4dcd9c20ad3efd0b3f817e7a809035269e1bd3"},
+]
+py-cord = [
+    {file = "py-cord-1.7.3.tar.gz", hash = "sha256:b319b0c282e6cd55fedf11efefe30f024fc9293fee3b3e2b715777be6d9fb1ae"},
+    {file = "py_cord-1.7.3-py3-none-any.whl", hash = "sha256:19cb49ee6cb830d71e8b5d9555249cef5c15c652c096176e69edce5ff993701b"},
 ]
 pygments = [
     {file = "Pygments-2.9.0-py3-none-any.whl", hash = "sha256:d66e804411278594d764fc69ec36ec13d9ae9147193a1740cd34d272ca383b8e"},

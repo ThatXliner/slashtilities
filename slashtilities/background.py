@@ -14,7 +14,7 @@ class MetaTasks(commands.Cog):
     def cog_unload(self):
         self.change_status.cancel()
 
-    @tasks.loop(minutes=30)
+    @tasks.loop(minutes=1)
     async def change_status(self):
         amount = len(self.bot.guilds)
         log.info(f"I saw {amount} of servers")
