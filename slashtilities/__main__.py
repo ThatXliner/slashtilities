@@ -13,7 +13,11 @@ from slashtilities import background, cogs, log, utils, settings, DB_ENABLED
 TOKEN = os.environ["DISCORD_TOKEN"]
 intents = Intents().default()
 
-bot = Bot(when_mentioned_or("/"), intents=intents)
+bot = Bot(
+    when_mentioned_or("/"),
+    intents=intents,
+    activity=discord.Game("I might retire soon..."),
+)
 slash = SlashCommand(bot, sync_commands=True)
 
 # TODO: listeners.py
@@ -183,7 +187,7 @@ async def on_slash_command_error(ctx, exception):
 bot.add_cog(cogs.Meta(bot))
 bot.add_cog(cogs.Polling(bot))
 bot.add_cog(cogs.Misc(bot))
-bot.add_cog(background.MetaTasks(bot))
+# bot.add_cog(background.MetaTasks(bot))
 bot.add_cog(cogs.CCing(bot))
 if DB_ENABLED:
     bot.add_cog(settings.Settings(bot))
