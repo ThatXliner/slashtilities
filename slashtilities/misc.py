@@ -49,52 +49,24 @@ async def emoji_backup(self, ctx: commands.Context):
             sendme = discord.File(
                 shutil.make_archive(str(fp.name), "zip", tempdir), filename="emojis.zip"
             )
+            print("Editing original message...")
             await status.edit(
                 embed=discord.Embed(
                     title="Backing up emojis",
                     description=(
                         f":white_check_mark: Downloaded {emoji_length} emojis\n"
                         ":white_check_mark: Zipped emojis\n"
-                        ":outbox_tray: Sending emojis..."
-                    ),
-                    color=discord.Color.blue(),
-                )
-            )
-            print("Sending archive...")
-            try:
-                await ctx.channel.send(file=sendme)
-            except discord.errors.Forbidden:
-                await status.edit(
-                    embed=discord.Embed(
-                        title="Backing up emojis",
-                        description=(
-                            f":white_check_mark: Downloaded {emoji_length} emojis\n"
-                            ":white_check_mark: Zipped emojis\n"
-                            ":x: Cannot send emojis\n"
-                        ),
-                        color=discord.Color.green(),
-                    ).add_field(
-                        name="Error!",
-                        value="I do not have the permissions to send files",
-                        inline=False,
-                    )
-                )
-            else:
-                await status.edit(
-                    embed=discord.Embed(
-                        title="Backing up emojis",
-                        description=(
-                            f":white_check_mark: Downloaded {emoji_length} emojis\n"
-                            ":white_check_mark: Zipped emojis\n"
-                            ":white_check_mark: Sent emojis\n"
-                        ),
-                        color=discord.Color.green(),
+                        ":outbox_tray: Sent emojis..."
                     ).add_field(
                         name="All set!",
                         value="Please download the file below",
                         inline=False,
-                    )
-                )
+                    ),
+                    color=discord.Color.blue(),
+                ),
+                attachments=[sendme],
+            )
+            print("Done")
         print("Done! Deleted temporary folders!")
 
 
@@ -117,6 +89,14 @@ async def igotpinged(self, ctx: commands.Context) -> None:
         await ctx.defer()
     except AttributeError:
         pass
+    await ctx.send(
+            embed=(
+                await utils.errorize(
+                    "How do you expect me to find your last message if "
+                    "I don't even have access to this channel???",
+                )
+            ).set_footer(text="What an idiot")
+    )
     log.info("Deffered.")
     try:
         last_msg = await utils.get_last_message_from(ctx)
