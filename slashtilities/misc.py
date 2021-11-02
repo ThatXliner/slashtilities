@@ -69,7 +69,7 @@ async def emoji_backup(self, ctx: commands.Context):
                         title="Backing up emojis",
                         description=(
                             f":white_check_mark: Downloaded {emoji_length} emojis\n"
-                            ":white_check_mark: Zipping emojis\n"
+                            ":white_check_mark: Zipped emojis\n"
                             ":x: Cannot send emojis\n"
                         ),
                         color=discord.Color.green(),
@@ -85,7 +85,7 @@ async def emoji_backup(self, ctx: commands.Context):
                         title="Backing up emojis",
                         description=(
                             f":white_check_mark: Downloaded {emoji_length} emojis\n"
-                            ":white_check_mark: Zipping emojis\n"
+                            ":white_check_mark: Zipped emojis\n"
                             ":white_check_mark: Sent emojis\n"
                         ),
                         color=discord.Color.green(),
