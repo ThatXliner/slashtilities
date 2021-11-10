@@ -33,15 +33,21 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
             ctx.send(
                 embed=await utils.errorize(f"Bruh, you have no messages to {atype}")
             )
+
         for user in filtered:
-            await (user.dm_channel or await user.create_dm()).send(
-                embed=await msg_func(
-                    ctx,
-                    filtered,
-                    from_message=last_msg,
-                    to=user,
+            try:
+                await (user.dm_channel or await user.create_dm()).send(
+                    embed=await msg_func(
+                        ctx,
+                        filtered,
+                        from_message=last_msg,
+                        to=user,
+                    )
                 )
-            )
+            except discord.errors.Forbidden:
+                await ctx.send(f"Cannot DM {user.name!r}", hidden=True)
+                return
+
         await ctx.send(  # XXX: Remove for BCC?
             embed=discord.Embed(
                 title=f"I have {atype}'d the following people:",
