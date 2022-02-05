@@ -61,6 +61,7 @@ async def emoji_backup(self, ctx: commands.Context):
                 )
             )
             print("Sending archive...")
+            # TODO: Split into multiple zips if too large
             try:
                 await ctx.channel.send(file=sendme)
             except discord.errors.Forbidden:
@@ -116,7 +117,15 @@ async def igotpinged(self, ctx: commands.Context) -> None:
     try:
         await ctx.defer()
     except AttributeError:
-        await ctx.channel.send("Please stop using the text-based version of this command and start using [slash commands](https://discord.com/blog/slash-commands-are-here)")
+        await ctx.channel.send(
+            embed=discord.Embed(
+                title=":warning: Hol' up",
+                description=(
+                    "Please stop using the text-based version of this command "
+                    "and start using [slash commands](https://discord.com/blog/slash-commands-are-here)"
+                ),
+            )
+        )
     log.info("Deffered.")
     try:
         last_msg = await utils.get_last_message_from(ctx)
