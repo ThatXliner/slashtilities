@@ -116,7 +116,7 @@ async def igotpinged(self, ctx: commands.Context) -> None:
     try:
         await ctx.defer()
     except AttributeError:
-        pass
+        await ctx.channel.send("Please stop using the text-based version of this command and start using [slash commands](https://discord.com/blog/slash-commands-are-here)")
     log.info("Deffered.")
     try:
         last_msg = await utils.get_last_message_from(ctx)
