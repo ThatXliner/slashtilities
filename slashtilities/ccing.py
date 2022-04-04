@@ -27,6 +27,7 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
         for user in users
         if (not (user.bot or user.id == ctx.author.id)) and await db.should_dm(user)
     }
+    cannot_dm = {}
     if filtered:
         last_msg = await utils.get_last_message_from(ctx)
         if last_msg is None:
@@ -45,8 +46,8 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
                     )
                 )
             except discord.errors.Forbidden:
-                await ctx.send(f"Cannot DM {user.name!r}", hidden=True)
-                return
+                cannot_dm.add(user)
+                continue
 
         await ctx.send(  # XXX: Remove for BCC?
             embed=discord.Embed(
@@ -61,11 +62,15 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
             )
         )
 
-    if filtered != set(users):
+    if filtered - cannot_dm != set(users):
         if filtered:
             await ctx.send("Wait, someone's missing? Here's why:")
         else:
             await ctx.send(f"You {atype}'d nobody. Here's why:")
+            
+        if cannot_dm:
+            filtered = filtered - cannot_dm
+            await ctx.channel.send(f":dizzy_face: Idk why but some people cannot be DMed")
 
         test = {user for user in users if not user.id == ctx.author.id}
         if test.issubset(filtered) or test == filtered:
