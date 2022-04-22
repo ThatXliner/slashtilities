@@ -27,7 +27,7 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
         for user in users
         if (not (user.bot or user.id == ctx.author.id)) and await db.should_dm(user)
     }
-    cannot_dm = {}
+    cannot_dm = set()
     if filtered:
         last_msg = await utils.get_last_message_from(ctx)
         if last_msg is None:
