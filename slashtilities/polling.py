@@ -204,7 +204,7 @@ def create_poll_options(maximum: int) -> List[Dict[str, str]]:
                 option_type=SlashCommandOptionType.STRING,
                 required=False,
             )
-            for x in range(3, maximum)
+            for x in range(3, maximum+1)
         ]
     )
     return output
