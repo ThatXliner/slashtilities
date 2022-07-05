@@ -114,6 +114,7 @@ async def make_list(stuff: List[str]) -> str:
 async def igotpinged(self, ctx: commands.Context) -> None:
     """Get the person who pinged you ever since your last message"""
     log.info("START OF `igotpinged`")
+    await utils.disable(ctx, reason="The bot is getting rate limited so hard because of this")
     try:
         await ctx.defer()
     except AttributeError:
