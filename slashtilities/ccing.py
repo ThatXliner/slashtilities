@@ -62,7 +62,7 @@ async def cc_helper(ctx: commands.Context, msg_func, atype, users):
             )
         )
 
-    if filtered - cannot_dm != set(users):
+    if set(filtered) - cannot_dm != set(users):
         if filtered:
             await ctx.send("Wait, someone's missing? Here's why:")
         else:
