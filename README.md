@@ -1,4 +1,12 @@
 # Slashtilities
+
+# Notice
+ I haven't got time to maintain this bot. [Heroku's free plan is dying](https://blog.heroku.com/next-chapter), and since this is just a fun project, *this is going to die along with it.*
+
+Thank all the people who helped contribute and test this project! It was fun while it lasted.
+
+---
+
 <center>
 
 <img src="./assets/banner.png" height="100"></img>
