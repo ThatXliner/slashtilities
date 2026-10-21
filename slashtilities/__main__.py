@@ -3,6 +3,10 @@ import ssl
 
 import aiohttp
 import certifi
+
+# Legacy slash-command helpers create their own default TLS sessions.
+os.environ["SSL_CERT_FILE"] = certifi.where()
+os.environ["SSL_CERT_DIR"] = ""
 import traceback
 
 import discord
