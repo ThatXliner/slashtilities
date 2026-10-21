@@ -1,4 +1,8 @@
 import os
+import ssl
+
+import aiohttp
+import certifi
 import traceback
 
 import discord
@@ -16,6 +20,9 @@ intents = Intents().default()
 bot = Bot(
     when_mentioned_or("/"),
     intents=intents,
+    connector=aiohttp.TCPConnector(
+        ssl=ssl.create_default_context(cafile=certifi.where())
+    ),
 )
 slash = SlashCommand(bot, sync_commands=True)
 
