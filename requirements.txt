@@ -1,3 +1,4 @@
+certifi==2026.10.19; python_version >= "3.7"
 aiohttp==3.7.4.post0; python_version >= "3.6" and python_full_version >= "3.5.3"
 async-timeout==3.0.1; python_full_version >= "3.5.3" and python_version >= "3.6"
 asyncpg==0.23.0; python_full_version >= "3.5.0"
